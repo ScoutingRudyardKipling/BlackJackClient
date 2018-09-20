@@ -16,8 +16,10 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.engency.blackjack.Models.Product
 import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
+import com.engency.blackjack.stores.ProductStore
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
@@ -34,12 +36,14 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
     private var LOG_TAG = "bclog"
 
     private lateinit var properties: GroupPropertyManager
+    private lateinit var productStore : ProductStore
 
     private var usedCodes: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.properties = GroupPropertyManager.getInstance(getApplicationContext())
+        this.properties = GroupPropertyManager(applicationContext)
+        this.productStore = ProductStore(applicationContext)
 
         setContentView(R.layout.activity_barcode_scanner)
 
@@ -104,12 +108,20 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         }
 
         usedCodes.add(barcode)
-        NetworkHelper.submitProduct(barcode, properties.get("token")!!, this)
+
+        if(productStore.hasProductWithCode(barcode)) {
+            Snackbar.make(this.etBarcode, "Hee, je hebt dit product al joh!", Snackbar.LENGTH_LONG).show()
+        } else {
+            NetworkHelper.submitProduct(barcode, properties.get("token")!!, this)
+        }
     }
 
     override fun success(data: JSONObject) {
         Log.e("SUCCESS", data.toString())
 
+        properties.updateWithGroupInstance(data)
+
+        Snackbar.make(this.etBarcode, "yesss, item is toegevoegd!", Snackbar.LENGTH_LONG).show()
     }
 
     override fun failure(message: String) {

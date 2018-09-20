@@ -9,7 +9,10 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.TextView
+import com.engency.blackjack.stores.ProductStore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -17,13 +20,18 @@ import kotlinx.android.synthetic.main.nav_header_main.view.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var properties: GroupPropertyManager
+    private lateinit var productStore: ProductStore
+    private lateinit var lvProducts: ListView
+
+    private lateinit var productAdapter: ProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
 
-        this.properties = GroupPropertyManager.getInstance(getApplicationContext())
+        this.properties = GroupPropertyManager(applicationContext)
+        this.productStore = ProductStore(applicationContext)
 
         if (this.properties.has("token")) {
             openView()
@@ -33,9 +41,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        productAdapter.setData(productStore.getAll())
+        productAdapter.notifyDataSetChanged()
+    }
+
     private fun openView() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        openListView()
 
         fab.setOnClickListener { view ->
             val intent = BarcodeScannerActivity.newIntent(this)
@@ -48,6 +65,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    private fun openListView() {
+        lvProducts = findViewById(R.id.lvProducts)
+        productAdapter = ProductAdapter(applicationContext, productStore.getAll())
+        lvProducts.adapter = productAdapter
     }
 
     override fun onBackPressed() {
@@ -68,7 +91,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_logout -> {
-
+                properties.clear()
+                startActivity(LoginActivity.newIntent(this))
             }
         }
 

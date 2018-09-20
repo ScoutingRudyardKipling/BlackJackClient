@@ -3,6 +3,7 @@ package com.engency.blackjack
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.engency.blackjack.Models.GroupProperty
+import com.engency.blackjack.Models.Product
 import org.jetbrains.anko.db.*
 
 class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", null, 1) {
@@ -22,10 +23,20 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
         db.createTable(GroupProperty.TABLE_NAME, true,
                 GroupProperty.COLUMN_KEY to TEXT + PRIMARY_KEY + UNIQUE,
                 GroupProperty.COLUMN_VALUE to TEXT)
+
+        db.createTable(Product.TABLE_NAME, true,
+                Product.COLUMN_ID to INTEGER + PRIMARY_KEY + UNIQUE,
+                Product.COLUMN_NAME to TEXT,
+                Product.COLUMN_IMAGE to TEXT,
+                Product.COLUMN_COSTS to INTEGER,
+                Product.COLUMN_REWARD to INTEGER,
+                Product.COLUMN_CODE to TEXT,
+                Product.COLUMN_BOUGHT to INTEGER,
+                Product.COLUMN_REWARDED to INTEGER
+        )
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Here you can upgrade tables, as usual
-        db.dropTable("User", true)
+        // no upgrade available
     }
 }

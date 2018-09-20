@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface {
         etPassword = findViewById(R.id.input_password)
         btnLogin = findViewById(R.id.btn_login)
 
-        properties = GroupPropertyManager.getInstance(applicationContext)
+        properties = GroupPropertyManager(applicationContext)
 
         btnLogin.setOnClickListener { performLogin() }
     }
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface {
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
+            return Intent(context, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 
@@ -50,13 +50,8 @@ class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface {
             properties.commit()
             NetworkHelper.getGroupInfo(token, this)
         } else {
-            Log.i("GROUPINFO", data.toString())
-            properties.put("name", data.getString("name"))
-            properties.put("group", data.getString("group"))
-            properties.put("points", data.getInt("points").toString())
-            properties.put("credits", data.getInt("credits").toString())
-            properties.commit()
-            startActivity(MainActivity.newIntent(this))
+            properties.updateWithGroupInstance(data)
+            startActivity(MainActivity.newIntent(this).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }
 
 

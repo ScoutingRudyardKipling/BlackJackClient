@@ -1,32 +1,20 @@
 package com.engency.blackjack
 
 import android.content.Context
+import android.util.Log
 import com.engency.blackjack.Models.GroupProperty
+import com.engency.blackjack.stores.ProductStore
 import org.jetbrains.anko.db.*
+import org.json.JSONObject
 
-class GroupPropertyManager {
+class GroupPropertyManager(private var context: Context) {
 
-    private var context: Context
     private var database: MyDatabaseOpenHelper
     private var properties: HashMap<String, String> = HashMap()
     private var hasChanged: Boolean = false
 
-    companion object {
-        private var instance: GroupPropertyManager? = null
-
-        @Synchronized
-        fun getInstance(ctx: Context): GroupPropertyManager {
-            if (instance == null) {
-                instance = GroupPropertyManager(ctx.getApplicationContext())
-            }
-            return instance!!
-        }
-    }
-
-    private constructor(context: Context) {
-        this.context = context
+    init {
         this.database = MyDatabaseOpenHelper.getInstance(this.context)
-
         parse()
     }
 
@@ -63,6 +51,22 @@ class GroupPropertyManager {
     fun clear() {
         this.properties.clear()
         this.hasChanged = true
+        this.commit()
+    }
+
+    fun updateWithGroupInstance(data : JSONObject) {
+        Log.i("GROUPINFO", data.toString())
+        this.put("name", data.getString("name"))
+        this.put("group", data.getString("group"))
+        this.put("points", data.getInt("points").toString())
+        this.put("credits", data.getInt("credits").toString())
+
+        // get productStore
+        val productStore = ProductStore(this.context)
+        productStore.clear()
+        productStore.addAll(data.getJSONArray("products"))
+
+
         this.commit()
     }
 
