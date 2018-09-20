@@ -7,6 +7,7 @@ import com.engency.blackjack.Models.Product
 import com.engency.blackjack.MyDatabaseOpenHelper
 import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.parseSingle
 import org.jetbrains.anko.db.select
 import org.json.JSONArray
 import org.json.JSONObject
@@ -20,6 +21,14 @@ class ProductStore(private var ctx: Context) {
         return this.database.use {
             select(Product.TABLE_NAME).exec {
                 parseList(classParser())
+            }
+        }
+    }
+
+    fun getById(id : Int) : Product? {
+        return this.database.use {
+            select(Product.TABLE_NAME).whereArgs(Product.COLUMN_ID + " = {id}", "id" to id).exec {
+                parseSingle(classParser())
             }
         }
     }

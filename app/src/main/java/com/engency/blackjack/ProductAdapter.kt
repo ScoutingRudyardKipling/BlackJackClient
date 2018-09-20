@@ -10,6 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.engency.blackjack.Models.Product
+import android.text.method.TextKeyListener.clear
+
+
 
 class ProductAdapter(private val context: Context, private var dataSource: List<Product>) : BaseAdapter() {
 
