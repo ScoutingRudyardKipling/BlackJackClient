@@ -16,6 +16,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.engency.blackjack.Models.Product
 import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
@@ -26,6 +27,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import org.json.JSONObject
 
 class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
+    private var detectorActive : Boolean = false
     private lateinit var etBarcode: EditText
     private lateinit var detector: BarcodeDetector
     private lateinit var svBarcode: SurfaceView
@@ -35,7 +37,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
     private var LOG_TAG = "bclog"
 
     private lateinit var properties: GroupPropertyManager
-    private lateinit var productStore : ProductStore
+    private lateinit var productStore: ProductStore
 
     private var usedCodes: ArrayList<String> = ArrayList()
 
@@ -52,14 +54,6 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         detector = BarcodeDetector.Builder(applicationContext)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build()
-
-        detector.setProcessor(object : Detector.Processor<Barcode> {
-            override fun release() {}
-
-            override fun receiveDetections(detections: Detector.Detections<Barcode>?) {
-                parseDetections(detections)
-            }
-        })
 
         cameraSource = CameraSource.Builder(this, detector)
                 .setRequestedPreviewSize(1024, 768)
@@ -84,6 +78,10 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
+
+
+//        foundProduct(productStore.getAll()[0])
+        showTextPopup("JA MENEER, IK HAD MIJN GORDEL NIET OM")
     }
 
     private fun parseDetections(detections: Detector.Detections<Barcode>?) {
@@ -108,7 +106,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
 
         usedCodes.add(barcode)
 
-        if(productStore.hasProductWithCode(barcode)) {
+        if (productStore.hasProductWithCode(barcode)) {
             Snackbar.make(this.etBarcode, "Hee, je hebt dit product al joh!", Snackbar.LENGTH_LONG).show()
         } else {
             NetworkHelper.submitProduct(barcode, properties.get("token")!!, this)
@@ -139,6 +137,14 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if(!detectorActive) {
+            startDetector()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         detector.release()
@@ -146,7 +152,31 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         cameraSource.release()
     }
 
+    fun foundProduct(product : Product) {
+        stopDetector()
+        startActivity(ProductPreviewActivity.newIntent(this, product))
+    }
 
+    fun showTextPopup(text : String) {
+        stopDetector()
+        startActivity(SimpleTextActivity.newIntent(this, text))
+    }
+
+    private fun startDetector() {
+        detector.setProcessor(object : Detector.Processor<Barcode> {
+            override fun release() {}
+
+            override fun receiveDetections(detections: Detector.Detections<Barcode>?) {
+                parseDetections(detections)
+            }
+        })
+        detectorActive = true
+    }
+
+    private fun stopDetector() {
+        detector.release()
+        detectorActive = false
+    }
 
     companion object {
 

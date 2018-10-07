@@ -6,6 +6,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_product_details">ProductDetails</string>
+    <string name="title_activity_product_preview">OMG</string>
+    <string name="title_popup_simple_text">Moneys!</string>
     <string name="costs_unlock_product">Kosten voor het unlocken: %1$d actiepunten. Je hebt op dit moment %2$d actiepunten.</string>
     <string name="costs_unlock_product_insufficient">Kosten voor het unlocken: %1$d actiepunten. Je hebt op dit moment %2$d actiepunten, dat is te weinig dus... Wat een pech.</string>
+    <string name="title_wild_product_appears">Wild %1$s appeared!</string>
 </resources>

@@ -8,31 +8,24 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.TextView
 import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import org.json.JSONObject
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, OnNetworkResponseInterface {
-
-
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
     private lateinit var lvProducts: ListView
     private lateinit var srlProducts: SwipeRefreshLayout
 
-    private lateinit var productAdapter: ProductAdapter
+    private var productAdapter: ProductAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         lvProducts = findViewById(R.id.lvProducts)
         productAdapter = ProductAdapter(applicationContext, productStore.getAll())
         lvProducts.adapter = productAdapter
-        lvProducts.setOnItemClickListener { a,b,index,d ->
+        lvProducts.setOnItemClickListener { a, b, index, d ->
             val product = productStore.getAll()[index]
             startActivity(ProductDetails.newIntent(this, product))
         }
@@ -126,9 +119,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun reloadListview() {
-        productAdapter.setData(productStore.getAll())
-        productAdapter.notifyDataSetChanged()
-        this.srlProducts.isRefreshing = false
+        if (this.properties.has("token")) {
+            productAdapter?.setData(productStore.getAll())
+            productAdapter?.notifyDataSetChanged()
+            this.srlProducts.isRefreshing = false
+        }
     }
 
     companion object {
@@ -137,5 +132,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return Intent(context, MainActivity::class.java)
         }
     }
+
 
 }

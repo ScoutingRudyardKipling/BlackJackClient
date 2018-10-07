@@ -52,7 +52,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
     private fun loadData() {
         Glide.with(applicationContext)
                 .asBitmap()
-                .load("http://blackjack.engency.com:3000/images/" + product.image)
+                .load("https://blackjack.engency.com:3000/images/" + product.image)
                 .into(ivImage)
         tvTitle.text = product.name
 
@@ -84,6 +84,9 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
         product = productStore.getById(product.id)!!
 
         loadData()
+
+        Snackbar.make(this.btnUnlock, "Yes! Je kan nu naar dit product rijden!", Snackbar.LENGTH_LONG).show()
+
     }
 
     override fun failure(message: String) {
