@@ -24,7 +24,7 @@ class NetworkHelper {
             )
         }
 
-        fun submitProduct(code : String, token: String, handler: OnNetworkResponseInterface) {
+        fun submitProduct(code: String, token: String, handler: OnNetworkResponseInterface) {
             post("products", token, listOf("code" to code), handler)
         }
 
@@ -32,8 +32,23 @@ class NetworkHelper {
             get("groups/current", token, handler)
         }
 
+        fun unlock(token: String, productId: Int, handler: OnNetworkResponseInterface) {
+            put(
+                    "products/$productId",
+                    token,
+                    listOf("action" to "unlock"),
+                    handler
+            )
+        }
+
         private fun get(path: String, token: String, handler: OnNetworkResponseInterface) {
             Fuel.get("$baseUrl/$path")
+                    .header("x-token" to token)
+                    .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
+        }
+
+        private fun put(path: String, token: String, parameters: List<Pair<String, Any?>>? = null, handler: OnNetworkResponseInterface) {
+            Fuel.put("$baseUrl/$path", parameters)
                     .header("x-token" to token)
                     .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
         }
