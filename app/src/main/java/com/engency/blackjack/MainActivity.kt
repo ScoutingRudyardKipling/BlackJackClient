@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ListView
+import android.widget.TextView
 import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var productStore: ProductStore
     private lateinit var lvProducts: ListView
     private lateinit var srlProducts: SwipeRefreshLayout
+    private lateinit var tvPoints: TextView
+    private lateinit var tvActionPoints: TextView
 
     private var productAdapter: ProductAdapter? = null
 
@@ -53,6 +56,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         openListView()
 
+        tvPoints = findViewById(R.id.tv_points)
+        tvActionPoints = findViewById(R.id.tv_action_points)
+
         fab.setOnClickListener { view ->
             val intent = BarcodeScannerActivity.newIntent(this)
             startActivity(intent)
@@ -64,6 +70,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
+        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
+
     }
 
     private fun openListView() {
