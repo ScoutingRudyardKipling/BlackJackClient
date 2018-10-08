@@ -21,13 +21,13 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Typel hier je code" />
+        android:hint="@string/hint_insert_code" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_submit_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Code invoeren" />
+        android:text="@string/title_submit_code" />
 
 
 </LinearLayout>

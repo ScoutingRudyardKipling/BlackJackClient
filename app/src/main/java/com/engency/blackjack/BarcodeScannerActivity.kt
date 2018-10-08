@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.engency.blackjack.Models.Product
@@ -27,11 +28,12 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import org.json.JSONObject
 
 class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
-    private var detectorActive : Boolean = false
+    private var detectorActive: Boolean = false
     private lateinit var etBarcode: EditText
     private lateinit var detector: BarcodeDetector
     private lateinit var svBarcode: SurfaceView
     private lateinit var cameraSource: CameraSource
+    private lateinit var btnSubmitCode: Button
 
     private var REQUEST_CAMERA = 1
     private var LOG_TAG = "bclog"
@@ -50,6 +52,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
 
         etBarcode = findViewById<View>(R.id.barcodeText) as EditText
         svBarcode = findViewById(R.id.sv_barcode)
+        btnSubmitCode = findViewById(R.id.btn_submit_code)
 
         detector = BarcodeDetector.Builder(applicationContext)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
@@ -80,8 +83,10 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
 
-//        foundProduct(productStore.getAll()[0])
-        showTextPopup("JA MENEER, IK HAD MIJN GORDEL NIET OM")
+        btnSubmitCode.setOnClickListener {
+            verifyCode(etBarcode.text.toString())
+            etBarcode.setText("")
+        }
     }
 
     private fun parseDetections(detections: Detector.Detections<Barcode>?) {
@@ -114,11 +119,23 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
     }
 
     override fun success(data: JSONObject) {
-        Log.e("SUCCESS", data.toString())
+        properties.updateWithGroupInstance(data.getJSONObject("groupInfo"))
 
-        properties.updateWithGroupInstance(data)
+        when (data.getString("type")) {
+            "points" -> {
+                val message: String = data.getString("message")
+                showTextPopup(message)
+            }
+            "product" -> {
+                foundProduct(productStore.getById(data.getInt("productId"))!!)
+            }
+            "product_reward" -> {
+                val message: String = data.getString("message")
+                showTextPopup(message)
+            }
+        }
 
-        Snackbar.make(this.etBarcode, "yesss, item is toegevoegd!", Snackbar.LENGTH_LONG).show()
+        Snackbar.make(this.etBarcode, "yesss, code is goedgekeurd!", Snackbar.LENGTH_LONG).show()
     }
 
     override fun failure(message: String) {
@@ -140,7 +157,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
     override fun onResume() {
         super.onResume()
 
-        if(!detectorActive) {
+        if (!detectorActive) {
             startDetector()
         }
     }
@@ -152,12 +169,12 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         cameraSource.release()
     }
 
-    fun foundProduct(product : Product) {
+    fun foundProduct(product: Product) {
         stopDetector()
         startActivity(ProductPreviewActivity.newIntent(this, product))
     }
 
-    fun showTextPopup(text : String) {
+    fun showTextPopup(text: String) {
         stopDetector()
         startActivity(SimpleTextActivity.newIntent(this, text))
     }
