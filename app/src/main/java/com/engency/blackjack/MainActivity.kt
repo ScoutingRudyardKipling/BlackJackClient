@@ -4,31 +4,31 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.ListView
+import android.widget.LinearLayout
 import android.widget.TextView
-import com.engency.blackjack.network.NetworkHelper
-import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import org.json.JSONObject
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, OnNetworkResponseInterface {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
-    private lateinit var lvProducts: ListView
-    private lateinit var srlProducts: SwipeRefreshLayout
     private lateinit var tvPoints: TextView
     private lateinit var tvActionPoints: TextView
+    private lateinit var llMainContainer: LinearLayout
 
-    private var productAdapter: ProductAdapter? = null
+    private val fragmentProducts : ProductOverview = ProductOverview()
+    private val fragmentScores : ScoreOverview = ScoreOverview()
+
+    private var fragmentActive : Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,23 +41,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             startActivity(LoginActivity.newIntent(this))
         }
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        reloadListview()
     }
 
     private fun openView() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        openListView()
-
         tvPoints = findViewById(R.id.tv_points)
         tvActionPoints = findViewById(R.id.tv_action_points)
+        llMainContainer = findViewById(R.id.ll_main_container)
+
+        // open correct fragment
+
+        openFragment(fragmentActive ?: fragmentProducts)
+
 
         fab.setOnClickListener { view ->
             val intent = BarcodeScannerActivity.newIntent(this)
@@ -73,19 +70,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
         tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
-
-    }
-
-    private fun openListView() {
-        srlProducts = findViewById(R.id.srlProducts)
-        srlProducts.setOnRefreshListener(this)
-        lvProducts = findViewById(R.id.lvProducts)
-        productAdapter = ProductAdapter(applicationContext, productStore.getAll())
-        lvProducts.adapter = productAdapter
-        lvProducts.setOnItemClickListener { a, b, index, d ->
-            val product = productStore.getAll()[index]
-            startActivity(ProductDetails.newIntent(this, product))
-        }
     }
 
     override fun onBackPressed() {
@@ -100,10 +84,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_products -> {
-                // Handle the camera action
+                openFragment(fragmentProducts)
             }
             R.id.nav_scores -> {
-
+                openFragment(fragmentScores)
             }
             R.id.nav_logout -> {
                 properties.clear()
@@ -115,24 +99,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onRefresh() {
-        NetworkHelper.getGroupInfo(properties.get("token")!!, this)
-    }
+    fun openFragment(fragment : Fragment) {
+        if(fragment !== this.fragmentActive) {
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            this.fragmentActive?.let {fragmentTransaction.remove(this.fragmentActive!!)}
+            fragmentTransaction.add(R.id.ll_main_container, fragment)
+            fragmentTransaction.commit()
 
-    override fun success(data: JSONObject) {
-        properties.updateWithGroupInstance(data)
-        reloadListview()
-    }
-
-    override fun failure(message: String) {
-        this.srlProducts.isRefreshing = false
-    }
-
-    private fun reloadListview() {
-        if (this.properties.has("token")) {
-            productAdapter?.setData(productStore.getAll())
-            productAdapter?.notifyDataSetChanged()
-            this.srlProducts.isRefreshing = false
+            this.fragmentActive = fragment
         }
     }
 

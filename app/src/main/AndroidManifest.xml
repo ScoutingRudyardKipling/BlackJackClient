@@ -23,9 +23,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -34,28 +36,26 @@
             android:name=".BarcodeScannerActivity"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ProductDetails"
             android:label="@string/title_activity_product_details"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ProductPreviewActivity"
             android:label="@string/title_activity_product_preview"
             android:parentActivityName=".BarcodeScannerActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
-
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".SimpleTextActivity"
             android:label="@string/title_popup_simple_text"
             android:parentActivityName=".BarcodeScannerActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
     </application>
 
 </manifest>

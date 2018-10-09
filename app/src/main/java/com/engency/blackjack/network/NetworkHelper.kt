@@ -32,6 +32,10 @@ class NetworkHelper {
             get("groups/current", token, handler)
         }
 
+        fun listScores(token: String, handler: OnNetworkResponseInterface) {
+            get("groups", token, handler)
+        }
+
         fun unlock(token: String, productId: Int, handler: OnNetworkResponseInterface) {
             put(
                     "products/$productId",

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BlackJack</string>
+    <string name="score_title">SCORES</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">BlackJack 2018</string>

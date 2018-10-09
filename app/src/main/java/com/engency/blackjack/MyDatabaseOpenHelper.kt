@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.engency.blackjack.Models.GroupProperty
 import com.engency.blackjack.Models.Product
+import com.engency.blackjack.Models.TeamScore
 import org.jetbrains.anko.db.*
 
 class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", null, 1) {
@@ -33,6 +34,13 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
                 Product.COLUMN_CODE to TEXT,
                 Product.COLUMN_BOUGHT to INTEGER,
                 Product.COLUMN_REWARDED to INTEGER
+        )
+
+        db.createTable(TeamScore.TABLE_NAME, true,
+                TeamScore.COLUMN_ID to INTEGER + PRIMARY_KEY + UNIQUE,
+                TeamScore.COLUMN_NAME to TEXT,
+                TeamScore.COLUMN_GROUP to TEXT,
+                TeamScore.COLUMN_SCORE to INTEGER
         )
     }
 
