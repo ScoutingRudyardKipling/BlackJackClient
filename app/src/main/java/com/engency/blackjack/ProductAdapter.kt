@@ -10,17 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.engency.blackjack.Models.Product
-import android.text.method.TextKeyListener.clear
-
-
 
 class ProductAdapter(private val context: Context, private var dataSource: List<Product>) : BaseAdapter() {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     fun setData(items: List<Product>) {
-//        val alItems = ArrayList<Product>()
-//        alItems.addAll(items)
         this.dataSource = items
     }
 
@@ -43,6 +38,7 @@ class ProductAdapter(private val context: Context, private var dataSource: List<
 
         // Get title element
         val titleTextView = rowView.findViewById(R.id.lvProduct_name) as TextView
+        val detailTextView = rowView.findViewById(R.id.lvProduct_detail) as TextView
         val imageView = rowView.findViewById(R.id.lvProduct_image) as ImageView
 
         val product = getItem(position) as Product
@@ -53,6 +49,14 @@ class ProductAdapter(private val context: Context, private var dataSource: List<
                 .into(imageView)
 
         titleTextView.text = product.name
+
+        if(!product.bought) {
+            detailTextView.text = "Nog niet unlocked"
+        } else if (product.rewarded) {
+            detailTextView.text = "Voltooid"
+        } else {
+            detailTextView.text = "Unlocked"
+        }
 
 
         return rowView
