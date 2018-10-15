@@ -56,6 +56,13 @@
             android:label="@string/title_popup_simple_text"
             android:parentActivityName=".BarcodeScannerActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
+
+        <service android:name=".network.FCMService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

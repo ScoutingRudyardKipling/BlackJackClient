@@ -5,10 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.engency.blackjack.Models.Product
 import com.engency.blackjack.MyDatabaseOpenHelper
-import org.jetbrains.anko.db.classParser
-import org.jetbrains.anko.db.parseList
-import org.jetbrains.anko.db.parseSingle
-import org.jetbrains.anko.db.select
+import org.jetbrains.anko.db.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -25,11 +22,25 @@ class ProductStore(private var ctx: Context) {
         }
     }
 
-    fun getById(id : Int) : Product? {
+    fun getById(id: Int): Product? {
         return this.database.use {
             select(Product.TABLE_NAME).whereArgs(Product.COLUMN_ID + " = {id}", "id" to id).exec {
                 parseSingle(classParser())
             }
+        }
+    }
+
+    fun update(product: Product) {
+        return this.database.use {
+            update(Product.TABLE_NAME,
+                    Product.COLUMN_NAME to product.name,
+                    Product.COLUMN_IMAGE to product.image,
+                    Product.COLUMN_COSTS to product.costs,
+                    Product.COLUMN_REWARD to product.reward,
+                    Product.COLUMN_CODE to product.code,
+                    Product.COLUMN_BOUGHT to product.bought,
+                    Product.COLUMN_REWARDED to product.rewarded
+            ).whereArgs(Product.COLUMN_ID + " = {id}", "id" to product.id).exec()
         }
     }
 

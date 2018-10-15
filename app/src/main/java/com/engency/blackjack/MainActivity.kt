@@ -14,10 +14,12 @@ import android.widget.TextView
 import com.engency.blackjack.stores.ProductStore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import com.engency.blackjack.network.FCMRegistrationManager
+import android.content.IntentFilter
+import android.util.Log
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
@@ -25,10 +27,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var tvActionPoints: TextView
     private lateinit var llMainContainer: LinearLayout
 
-    private val fragmentProducts : ProductOverview = ProductOverview()
-    private val fragmentScores : ScoreOverview = ScoreOverview()
+    private val fragmentProducts: ProductOverview = ProductOverview()
+    private val fragmentScores: ScoreOverview = ScoreOverview()
 
-    private var fragmentActive : Fragment? = null
+    private var fragmentActive: Fragment? = null
+
+    private var fcmRegistrationManager: FCMRegistrationManager = FCMRegistrationManager()
+    private val dataUpdateReceiver: DataUpdateReceiver = DataUpdateReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +43,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (this.properties.has("token")) {
             openView()
+            if (this.properties.get("registered") != "1") {
+                fcmRegistrationManager.register(this.properties.get("token")!!, this.properties)
+            }
         } else {
             startActivity(LoginActivity.newIntent(this))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val intentFilter = IntentFilter("refresh")
+        registerReceiver(dataUpdateReceiver, intentFilter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(dataUpdateReceiver)
     }
 
     private fun openView() {
@@ -99,16 +119,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun openFragment(fragment : Fragment) {
-        if(fragment !== this.fragmentActive) {
+    fun openFragment(fragment: Fragment) {
+        if (fragment !== this.fragmentActive) {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            this.fragmentActive?.let {fragmentTransaction.remove(this.fragmentActive!!)}
+            this.fragmentActive?.let { fragmentTransaction.remove(this.fragmentActive!!) }
             fragmentTransaction.add(R.id.ll_main_container, fragment)
             fragmentTransaction.commit()
 
             this.fragmentActive = fragment
         }
+    }
+
+    override fun onUpdateRequested() {
+        Log.d("FCM", "update yeah")
+
+        properties.reload()
+        tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
+        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
+        fragmentProducts.onUpdateRequested()
     }
 
     companion object {

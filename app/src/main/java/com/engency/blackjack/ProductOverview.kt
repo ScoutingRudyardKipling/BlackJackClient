@@ -68,6 +68,10 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
         NetworkHelper.getGroupInfo(properties.get("token")!!, this)
     }
 
+    fun onUpdateRequested() {
+        reloadListview()
+    }
+
     override fun success(data: JSONObject) {
         properties.updateWithGroupInstance(data)
         reloadListview()

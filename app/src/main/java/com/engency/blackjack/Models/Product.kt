@@ -14,7 +14,7 @@ data class Product(var id: Int, val name: String, val image: String, val costs: 
         val COLUMN_BOUGHT = "bought"
         val COLUMN_REWARDED = "rewarded"
 
-        fun fromJsonObject(item: JSONObject) : Product {
+        fun fromJsonObject(item: JSONObject): Product {
             return Product(
                     item.getInt("_id"),
                     item.getString("name"),
@@ -24,6 +24,19 @@ data class Product(var id: Int, val name: String, val image: String, val costs: 
                     item.getString("code"),
                     item.getBoolean("bought"),
                     item.getBoolean("rewarded")
+            )
+        }
+
+        fun fromMap(item: Map<String, String>): Product {
+            return Product(
+                    item.getValue("_id").toInt(),
+                    item.getValue("name"),
+                    item.getValue("image"),
+                    item.getValue("reward").toInt(),
+                    item.getValue("costs").toInt(),
+                    item.getValue("code"),
+                    item.getValue("bought") == "true",
+                    item.getValue("rewarded") == "true"
             )
         }
     }

@@ -18,6 +18,10 @@ class GroupPropertyManager(private var context: Context) {
         parse()
     }
 
+    fun reload() {
+        parse()
+    }
+
     private fun parse() {
         val properties = this.database.use {
             select(GroupProperty.TABLE_NAME, GroupProperty.COLUMN_KEY, GroupProperty.COLUMN_VALUE).exec {
@@ -54,7 +58,7 @@ class GroupPropertyManager(private var context: Context) {
         this.commit()
     }
 
-    fun updateWithGroupInstance(data : JSONObject) {
+    fun updateWithGroupInstance(data: JSONObject) {
         Log.i("GROUPINFO", data.toString())
         this.put("name", data.getString("name"))
         this.put("group", data.getString("group"))
@@ -74,10 +78,10 @@ class GroupPropertyManager(private var context: Context) {
         this.database.use {
             delete(GroupProperty.TABLE_NAME)
 
-            properties.forEach { key, value ->
+            for (entry in properties) {
                 insert(GroupProperty.TABLE_NAME,
-                        GroupProperty.COLUMN_KEY to key,
-                        GroupProperty.COLUMN_VALUE to value
+                        GroupProperty.COLUMN_KEY to entry.key,
+                        GroupProperty.COLUMN_VALUE to entry.value
                 )
             }
         }

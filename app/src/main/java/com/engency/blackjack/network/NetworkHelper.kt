@@ -28,6 +28,10 @@ class NetworkHelper {
             post("products", token, listOf("code" to code), handler)
         }
 
+        fun submitFCMToken(token: String, fcmToken : String, handler: OnNetworkResponseInterface) {
+            post("groups/current/fcm", token, listOf("token" to fcmToken), handler)
+        }
+
         fun getGroupInfo(token: String, handler: OnNetworkResponseInterface) {
             get("groups/current", token, handler)
         }
