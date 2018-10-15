@@ -3,6 +3,9 @@ package com.engency.blackjack.Models
 import org.json.JSONObject
 
 data class TeamScore(var id: Int, val name: String, val group: String, val score: Int) {
+
+    var index : Int = 0
+
     companion object {
         val TABLE_NAME = "TeamScore"
         val COLUMN_ID = "id"

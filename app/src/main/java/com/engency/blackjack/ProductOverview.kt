@@ -83,7 +83,7 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
 
     private fun reloadListview() {
         if (this.properties.has("token")) {
-            productAdapter?.setData(productStore.getAll())
+            productAdapter?.setData(productStore.getAllSorted())
             productAdapter?.notifyDataSetChanged()
             this.srlProducts.isRefreshing = false
         }

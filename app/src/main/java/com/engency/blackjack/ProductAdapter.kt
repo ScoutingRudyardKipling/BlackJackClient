@@ -2,6 +2,7 @@ package com.engency.blackjack
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +55,10 @@ class ProductAdapter(private val context: Context, private var dataSource: List<
             detailTextView.text = "Nog niet unlocked"
         } else if (product.rewarded) {
             detailTextView.text = "Voltooid"
+            rowView.setBackgroundColor(Color.parseColor("#c8f9cb"))
         } else {
             detailTextView.text = "Unlocked"
+            rowView.setBackgroundColor(Color.parseColor("#c8d2f9"))
         }
 
 

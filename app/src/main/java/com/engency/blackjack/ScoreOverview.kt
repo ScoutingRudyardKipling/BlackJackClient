@@ -39,7 +39,7 @@ class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetwor
         srlScores = v.findViewById(R.id.srl_scores)
         srlScores.setOnRefreshListener(this)
         lvScores = v.findViewById(R.id.lv_scores)
-        scoreAdapter = ScoreAdapter(activity!!.applicationContext, scoreStore.getAll())
+        scoreAdapter = ScoreAdapter(activity!!.applicationContext, scoreStore.getAllSorted())
         lvScores.adapter = scoreAdapter
 
         return v
@@ -78,7 +78,7 @@ class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetwor
 
     private fun reloadListview() {
         if (this.properties.has("token")) {
-            scoreAdapter?.setData(scoreStore.getAll())
+            scoreAdapter?.setData(scoreStore.getAllSorted())
             scoreAdapter?.notifyDataSetChanged()
             this.srlScores.isRefreshing = false
         }

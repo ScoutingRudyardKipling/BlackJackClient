@@ -2,6 +2,7 @@ package com.engency.blackjack
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,10 +43,13 @@ class ScoreAdapter(private val context: Context, private var dataSource: List<Te
 
         val team = getItem(position) as TeamScore
 
-        titleTeamName.text = team.name
+        titleTeamName.text = team.index.toString() + " - " + team.name
         titleTeamScore.text = team.score.toString()
         titleGroup.text = team.group
 
+        if(team.index == 13) {
+            rowView.setBackgroundColor(Color.parseColor("#ffa500"))
+        }
 
         return rowView
     }

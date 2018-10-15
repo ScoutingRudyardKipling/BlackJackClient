@@ -23,6 +23,17 @@ class ScoreStore(private var ctx: Context) {
         }
     }
 
+    fun getAllSorted(): List<TeamScore> {
+        var index = 1
+        val list = getAll().sortedWith(compareByDescending { it.score })
+
+        list.forEach {
+            it.index = index++
+        }
+
+        return list
+    }
+
     fun clear() {
         this.database.use {
             execSQL("delete from " + TeamScore.TABLE_NAME)

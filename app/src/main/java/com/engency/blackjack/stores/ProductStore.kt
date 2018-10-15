@@ -22,6 +22,10 @@ class ProductStore(private var ctx: Context) {
         }
     }
 
+    fun getAllSorted(): List<Product> {
+        return getAll().sortedWith(compareBy { it.name })
+    }
+
     fun getById(id: Int): Product? {
         return this.database.use {
             select(Product.TABLE_NAME).whereArgs(Product.COLUMN_ID + " = {id}", "id" to id).exec {
