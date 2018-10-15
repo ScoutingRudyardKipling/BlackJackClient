@@ -13,7 +13,7 @@
     <string name="costs_unlock_product_insufficient">Kosten voor het unlocken: %1$d actiepunten. Je hebt op dit moment %2$d actiepunten, dat is te weinig dus... Wat een pech.</string>
     <string name="title_wild_product_appears">Wild %1$s appeared!</string>
     <string name="hint_insert_code">Typel hier je code</string>
-    <string name="title_submit_code">Code Invoeren</string>
+    <string name="title_submit_code">Invoeren</string>
     <string name="points_amount">%1$s punten</string>
     <string name="action_points_amount">%1$s actiepunten</string>
 </resources>

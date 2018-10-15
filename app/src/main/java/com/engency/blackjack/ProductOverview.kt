@@ -42,7 +42,7 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
         productAdapter = ProductAdapter(activity!!.applicationContext, productStore.getAll())
         lvProducts.adapter = productAdapter
         lvProducts.setOnItemClickListener { a, b, index, d ->
-            val product = productStore.getAll()[index]
+            val product = productStore.getAllSorted()[index]
             startActivity(ProductDetails.newIntent(activity!!, product))
         }
 
