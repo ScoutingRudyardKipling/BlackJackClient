@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimaryLight"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,6 +15,14 @@
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/ic_launcher" />
 
         <!-- Email Label -->
         <android.support.design.widget.TextInputLayout
@@ -22,7 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:text="rudyardkipling"
+                android:textColor="@color/colorTextWhite"
+                android:backgroundTint="@color/colorTextWhite"
                 android:hint="Groepsnaam" />
         </android.support.design.widget.TextInputLayout>
 
@@ -36,7 +49,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="test"
+                android:textColor="@color/colorTextWhite"
+                android:backgroundTint="@color/colorTextWhite"
                 android:hint="Wachtwoord"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -47,6 +61,8 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorTextWhite"
             android:text="Login"/>
 
     </LinearLayout>
