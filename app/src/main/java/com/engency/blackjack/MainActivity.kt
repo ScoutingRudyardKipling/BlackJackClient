@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import com.engency.blackjack.network.FCMRegistrationManager
 import android.content.IntentFilter
 import android.util.Log
+import android.view.View
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
@@ -90,6 +91,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
         tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
+
+        // set navigation header props
+        val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
+        val headerView = navigationView.getHeaderView(0)
+        val tvGroupName = headerView.findViewById(R.id.tv_group_name) as TextView
+        tvGroupName.text = properties.get("name")
     }
 
     override fun onBackPressed() {
