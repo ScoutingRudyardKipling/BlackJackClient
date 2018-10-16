@@ -28,6 +28,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
         db.createTable(Product.TABLE_NAME, true,
                 Product.COLUMN_ID to INTEGER + PRIMARY_KEY + UNIQUE,
                 Product.COLUMN_NAME to TEXT,
+                Product.COLUMN_DESCRIPTION to TEXT,
                 Product.COLUMN_IMAGE to TEXT,
                 Product.COLUMN_COSTS to INTEGER,
                 Product.COLUMN_REWARD to INTEGER,

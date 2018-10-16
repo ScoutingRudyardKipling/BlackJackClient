@@ -55,6 +55,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
+        updatePoints()
+
         val intentFilter = IntentFilter("refresh")
         registerReceiver(dataUpdateReceiver, intentFilter)
     }
@@ -89,14 +91,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
-        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
-
         // set navigation header props
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         val headerView = navigationView.getHeaderView(0)
         val tvGroupName = headerView.findViewById(R.id.tv_group_name) as TextView
         tvGroupName.text = properties.get("name")
+    }
+
+    fun updatePoints() {
+        tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
+        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
     }
 
     override fun onBackPressed() {

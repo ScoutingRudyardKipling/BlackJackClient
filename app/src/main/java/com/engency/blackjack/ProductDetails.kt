@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -24,6 +26,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
     private lateinit var ivImage: ImageView
     private lateinit var tvTitle: TextView
+    private lateinit var tvStatus: TextView
     private lateinit var tvCosts: TextView
     private lateinit var btnUnlock: Button
 
@@ -43,6 +46,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
         ivImage = findViewById(R.id.iv_image)
         tvTitle = findViewById(R.id.tv_title)
+        tvStatus = findViewById(R.id.tv_status)
         tvCosts = findViewById(R.id.tv_costs)
         btnUnlock = findViewById(R.id.btn_unlock)
 
@@ -57,18 +61,28 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
         tvTitle.text = product.name
 
         val unlockEnabled: Boolean = product.costs <= this.actionPointCounter
-        val detailsEnabled: Boolean = product.bought
 
-        if(detailsEnabled) {
+        if (product.rewarded) {
             btnUnlock.isEnabled = false
+            tvStatus.text = "Je hebt hier al " + product.reward.toString() + " punten voor gekregen."
+            tvCosts.text = ""
+            btnUnlock.visibility = View.INVISIBLE
+        } else if(product.bought) {
+            btnUnlock.isEnabled = false
+            tvStatus.text = "Je hebt het product unlocked en kan met onderstaande beschrijving naar de bijbehorende post rijden:"
             tvCosts.text = "Hier komt een beschrijving van hoe je op deze post komt"
+
+            tvCosts.movementMethod = LinkMovementMethod.getInstance()
+            tvCosts.text = Html.fromHtml("<strong><em>test</em><a href='https://www.google.com'>google</a></strong>")
+
             btnUnlock.visibility = View.INVISIBLE
         } else {
             val stringResource: Int = if (unlockEnabled) R.string.costs_unlock_product else R.string.costs_unlock_product_insufficient
+            tvStatus.text = "Heel leuk dat je dit product hebt gevonden, maar het is nog geen punten waard! Als je het product 'unlockt' krijg je meer details over hoe je je puntjes binnen kan harken."
             tvCosts.text = String.format(resources.getString(stringResource), product.costs, this.actionPointCounter)
             btnUnlock.isEnabled = unlockEnabled
 
-            if (unlockEnabled && !product.bought) {
+            if (unlockEnabled) {
                 btnUnlock.setOnClickListener { performUnlock() }
             }
         }

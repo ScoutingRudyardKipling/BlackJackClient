@@ -38,6 +38,7 @@ class ProductStore(private var ctx: Context) {
         return this.database.use {
             update(Product.TABLE_NAME,
                     Product.COLUMN_NAME to product.name,
+                    Product.COLUMN_DESCRIPTION to product.description,
                     Product.COLUMN_IMAGE to product.image,
                     Product.COLUMN_COSTS to product.costs,
                     Product.COLUMN_REWARD to product.reward,
@@ -61,6 +62,7 @@ class ProductStore(private var ctx: Context) {
             val values = ContentValues()
             values.put(Product.COLUMN_ID, product.id)
             values.put(Product.COLUMN_NAME, product.name)
+            values.put(Product.COLUMN_DESCRIPTION, product.description)
             values.put(Product.COLUMN_IMAGE, product.image)
             values.put(Product.COLUMN_COSTS, product.costs)
             values.put(Product.COLUMN_REWARD, product.reward)
