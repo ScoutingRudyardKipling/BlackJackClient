@@ -22,6 +22,8 @@ import android.view.View
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
 
+    private var loggedIn : Boolean = false
+
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
     private lateinit var tvPoints: TextView
@@ -43,11 +45,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.productStore = ProductStore(applicationContext)
 
         if (this.properties.has("token")) {
+            loggedIn = true
             openView()
             if (this.properties.get("registered") != "1") {
                 fcmRegistrationManager.register(this.properties.get("token")!!, this.properties)
             }
         } else {
+            loggedIn = false
             startActivity(LoginActivity.newIntent(this))
         }
     }
@@ -55,15 +59,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        updatePoints()
-
-        val intentFilter = IntentFilter("refresh")
-        registerReceiver(dataUpdateReceiver, intentFilter)
+        if(loggedIn) {
+            updatePoints()
+            val intentFilter = IntentFilter("refresh")
+            registerReceiver(dataUpdateReceiver, intentFilter)
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(dataUpdateReceiver)
+        if(loggedIn) {
+            unregisterReceiver(dataUpdateReceiver)
+        }
     }
 
     private fun openView() {
