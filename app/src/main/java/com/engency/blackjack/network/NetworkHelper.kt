@@ -24,11 +24,15 @@ class NetworkHelper {
             )
         }
 
+        fun submitLocation(lat: Double, lon: Double, token: String, handler: OnNetworkResponseInterface) {
+            post("locations", token, listOf("lat" to lat, "lon" to lon), handler)
+        }
+
         fun submitProduct(code: String, token: String, handler: OnNetworkResponseInterface) {
             post("products", token, listOf("code" to code), handler)
         }
 
-        fun submitFCMToken(token: String, fcmToken : String, handler: OnNetworkResponseInterface) {
+        fun submitFCMToken(token: String, fcmToken: String, handler: OnNetworkResponseInterface) {
             post("groups/current/fcm", token, listOf("token" to fcmToken), handler)
         }
 
@@ -76,10 +80,14 @@ class NetworkHelper {
         private fun handleResponse(resp: Response, result: Result<Json, FuelError>, handler: OnNetworkResponseInterface) {
             result.fold(success = { json ->
                 val data: JSONObject = json.obj()
+                var innerData = JSONObject()
+                if (data.has("data")) {
+                    innerData = data.getJSONObject("data")
+                }
                 val success: Boolean = data.getBoolean("success")
 
                 if (success) {
-                    handler.success(data.getJSONObject("data"))
+                    handler.success(innerData)
                 } else {
                     handler.failure(data.getString("message"))
                 }

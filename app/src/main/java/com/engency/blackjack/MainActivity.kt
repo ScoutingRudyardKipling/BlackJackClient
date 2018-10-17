@@ -1,5 +1,6 @@
 package com.engency.blackjack
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +17,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import com.engency.blackjack.network.FCMRegistrationManager
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 
@@ -50,6 +54,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (this.properties.get("registered") != "1") {
                 fcmRegistrationManager.register(this.properties.get("token")!!, this.properties)
             }
+
+            grantLocationAccess()
         } else {
             loggedIn = false
             startActivity(LoginActivity.newIntent(this))
@@ -156,6 +162,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
         tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
         fragmentProducts.onUpdateRequested()
+    }
+
+    /**
+     * Location granting stuff
+     */
+
+    private var requestFineLocation = 12
+    private var mAlreadyStartedService = false
+
+    fun grantLocationAccess() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("MAINACTIVITY", "permission location granted")
+            startLocationService()
+        } else {
+            ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestFineLocation)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            requestFineLocation -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("MAINACTIVITY", "permission location granted")
+                startLocationService()
+            } else {
+                Log.d("MAINACTIVITY", "permission location denied")
+            }
+        }
+    }
+
+    fun startLocationService() {
+        if (!mAlreadyStartedService) {
+
+            //Start location sharing service to app server.........
+            val intent = Intent(this, LocationMonitoringService::class.java)
+            startService(intent)
+
+            mAlreadyStartedService = true
+        }
     }
 
     companion object {
