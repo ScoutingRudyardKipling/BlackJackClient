@@ -29,6 +29,7 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
     private lateinit var lvProducts: ListView
     private lateinit var srlProducts: SwipeRefreshLayout
     private var productAdapter: ProductAdapter? = null
+    private var refreshListener: OnRequestDataUpdate? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,6 +48,10 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
         }
 
         return v
+    }
+
+    fun setOnRefreshData(listener: OnRequestDataUpdate) {
+        refreshListener = listener
     }
 
     override fun onAttach(context: Context) {
@@ -86,6 +91,10 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
             productAdapter?.setData(productStore.getAllSorted())
             productAdapter?.notifyDataSetChanged()
             this.srlProducts.isRefreshing = false
+
+            if (refreshListener != null) {
+                refreshListener!!.onUpdateRequested(false)
+            }
         }
     }
 

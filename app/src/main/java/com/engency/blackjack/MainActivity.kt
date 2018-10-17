@@ -26,7 +26,7 @@ import android.view.View
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
 
-    private var loggedIn : Boolean = false
+    private var loggedIn: Boolean = false
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fcmRegistrationManager.register(this.properties.get("token")!!, this.properties)
             }
 
+            fragmentProducts.setOnRefreshData(this)
             grantLocationAccess()
         } else {
             loggedIn = false
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        if(loggedIn) {
+        if (loggedIn) {
             updatePoints()
             val intentFilter = IntentFilter("refresh")
             registerReceiver(dataUpdateReceiver, intentFilter)
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPause() {
         super.onPause()
-        if(loggedIn) {
+        if (loggedIn) {
             unregisterReceiver(dataUpdateReceiver)
         }
     }
@@ -155,13 +156,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onUpdateRequested() {
+    override fun onUpdateRequested(cascade: Boolean) {
         Log.d("FCM", "update yeah")
 
         properties.reload()
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
         tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
-        fragmentProducts.onUpdateRequested()
+
+        if (cascade) {
+            fragmentProducts.onUpdateRequested()
+        }
     }
 
     /**
