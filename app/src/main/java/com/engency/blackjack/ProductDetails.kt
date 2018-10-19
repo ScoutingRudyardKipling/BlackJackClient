@@ -73,7 +73,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
             tvCosts.text = "Hier komt een beschrijving van hoe je op deze post komt"
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
-            tvCosts.text = Html.fromHtml("<strong><em>test</em><a href='https://www.google.com'>google</a></strong>")
+            tvCosts.text = Html.fromHtml(product.description)
 
             btnUnlock.visibility = View.INVISIBLE
         } else {
