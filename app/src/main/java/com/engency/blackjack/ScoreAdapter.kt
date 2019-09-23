@@ -47,10 +47,6 @@ class ScoreAdapter(private val context: Context, private var dataSource: List<Te
         titleTeamScore.text = team.score.toString()
         titleGroup.text = team.group
 
-        if(team.index == 13) {
-            rowView.setBackgroundColor(Color.parseColor("#ffa500"))
-        }
-
         return rowView
     }
 }

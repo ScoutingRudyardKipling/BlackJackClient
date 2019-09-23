@@ -43,7 +43,6 @@ class ProductStore(private var ctx: Context) {
                     Product.COLUMN_COSTS to product.costs,
                     Product.COLUMN_REWARD to product.reward,
                     Product.COLUMN_CODE to product.code,
-                    Product.COLUMN_BOUGHT to product.bought,
                     Product.COLUMN_REWARDED to product.rewarded
             ).whereArgs(Product.COLUMN_ID + " = {id}", "id" to product.id).exec()
         }
@@ -67,7 +66,6 @@ class ProductStore(private var ctx: Context) {
             values.put(Product.COLUMN_COSTS, product.costs)
             values.put(Product.COLUMN_REWARD, product.reward)
             values.put(Product.COLUMN_CODE, product.code)
-            values.put(Product.COLUMN_BOUGHT, product.bought)
             values.put(Product.COLUMN_REWARDED, product.rewarded)
 
             // insert
