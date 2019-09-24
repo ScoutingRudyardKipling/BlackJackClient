@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_products"
             android:icon="@drawable/ic_menu_shoppingcart"
-            android:title="Boodschappen" />
+            android:title="Posten" />
         <item
             android:id="@+id/nav_scores"
             android:icon="@drawable/ic_menu_ranking"
