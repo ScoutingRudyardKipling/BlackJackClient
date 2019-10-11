@@ -7,7 +7,7 @@
     <string name="nav_header_subtitle">BlackJack 2019</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_product_details">ProductDetails</string>
+    <string name="title_activity_product_details">Postgegevens</string>
     <string name="title_activity_product_preview">OMG</string>
     <string name="title_popup_simple_text">Moneys!</string>
     <string name="title_wild_product_appears">Wild %1$s appeared!</string>
