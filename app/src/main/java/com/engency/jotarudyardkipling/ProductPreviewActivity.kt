@@ -42,7 +42,7 @@ class ProductPreviewActivity : AppCompatActivity() {
     private fun loadData() {
         Glide.with(applicationContext)
                 .asBitmap()
-                .load("https://blackjack.engency.com:3000/images/" + product.image)
+                .load("https://blackjack.engency.com:4000/images/" + product.image)
                 .into(ivImage)
         tvTitle.text = String.format(resources.getString(R.string.title_wild_product_appears), product.name.toUpperCase())
     }

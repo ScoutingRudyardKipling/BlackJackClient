@@ -13,7 +13,7 @@ import org.json.JSONObject
 class NetworkHelper {
     companion object {
 
-        private var baseUrl = "https://blackjack.engency.com:3000"
+        private var baseUrl = "https://blackjack.engency.com:4000"
 
         fun login(groupName: String, password: String, handler: OnNetworkResponseInterface) {
             post(

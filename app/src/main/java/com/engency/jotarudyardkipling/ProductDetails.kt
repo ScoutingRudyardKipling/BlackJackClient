@@ -53,7 +53,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
     private fun loadData() {
         Glide.with(applicationContext)
                 .asBitmap()
-                .load("https://blackjack.engency.com:3000/images/" + product.image)
+                .load("https://blackjack.engency.com:4000/images/" + product.image)
                 .into(ivImage)
         tvTitle.text = product.name
 
