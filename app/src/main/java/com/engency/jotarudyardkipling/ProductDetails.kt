@@ -32,11 +32,14 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
     private lateinit var properties: GroupPropertyManager
 
+    private var actionPointCounter: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_details)
 
         this.properties = GroupPropertyManager(applicationContext)
+        this.actionPointCounter = this.properties.get("credits")!!.toInt()
 
         productStore = ProductStore(applicationContext)
         product = productStore.getById(intent.extras!!.getInt("product"))!!
@@ -57,20 +60,37 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
                 .into(ivImage)
         tvTitle.text = product.name
 
+        val unlockEnabled: Boolean = product.costs <= this.actionPointCounter
+
         if (product.rewarded) {
             btnUnlock.isEnabled = false
             tvStatus.text = "Je hebt hier al " + product.reward.toString() + " punten voor gekregen."
             tvCosts.text = ""
             btnUnlock.visibility = View.INVISIBLE
-        } else {
+        } else if(product.bought) {
             btnUnlock.isEnabled = false
-            tvStatus.text = "Met onderstaande beschrijving kan je naar de bijbehorende post rijden:"
+            tvStatus.text = "Je hebt dit item gekocht!"
+            tvCosts.text = ""
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
             tvCosts.text = Html.fromHtml(product.description)
 
             btnUnlock.visibility = View.INVISIBLE
+        } else {
+            val stringResource: Int = if (unlockEnabled) R.string.costs_unlock_product else R.string.costs_unlock_product_insufficient
+            tvStatus.text = "Heel leuk dat je dit item in je lijstje hebt staan, maar omdat je het nog niet gekocht hebt kan het je nog niet helpen bij je goudmijn! Als je het item koopt zal je op de posten die je nog moet doen een voordeel ontvangen."
+            tvCosts.text = String.format(resources.getString(stringResource), product.costs, this.actionPointCounter)
+            btnUnlock.isEnabled = unlockEnabled
+
+            if (unlockEnabled) {
+                btnUnlock.setOnClickListener { performUnlock() }
+            }
         }
+    }
+
+    fun performUnlock() {
+        NetworkHelper.unlock(this.properties.get("token")!!, this.product.id, this)
+
     }
 
     override fun success(data: JSONObject) {
@@ -79,7 +99,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
         loadData()
 
-        Snackbar.make(this.btnUnlock, "Yes! Je kan nu naar dit product rijden!", Snackbar.LENGTH_LONG).show()
+        Snackbar.make(this.btnUnlock, "Yes! Je goudmijn is al een stuk dichter bij!", Snackbar.LENGTH_LONG).show()
 
     }
 

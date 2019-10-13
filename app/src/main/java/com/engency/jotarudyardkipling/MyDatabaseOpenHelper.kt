@@ -7,7 +7,7 @@ import com.engency.jotarudyardkipling.Models.Product
 import com.engency.jotarudyardkipling.Models.TeamScore
 import org.jetbrains.anko.db.*
 
-class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", null, 2) {
+class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", null, 1) {
     companion object {
         private var instance: MyDatabaseOpenHelper? = null
 
@@ -33,6 +33,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
                 Product.COLUMN_COSTS to INTEGER,
                 Product.COLUMN_REWARD to INTEGER,
                 Product.COLUMN_CODE to TEXT,
+                Product.COLUMN_BOUGHT to INTEGER,
                 Product.COLUMN_REWARDED to INTEGER
         )
 
@@ -46,17 +47,5 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // no upgrade available
-        db.execSQL("DROP TABLE ${Product.TABLE_NAME};")
-
-        db.createTable(Product.TABLE_NAME, true,
-                Product.COLUMN_ID to INTEGER + PRIMARY_KEY + UNIQUE,
-                Product.COLUMN_NAME to TEXT,
-                Product.COLUMN_DESCRIPTION to TEXT,
-                Product.COLUMN_IMAGE to TEXT,
-                Product.COLUMN_COSTS to INTEGER,
-                Product.COLUMN_REWARD to INTEGER,
-                Product.COLUMN_CODE to TEXT,
-                Product.COLUMN_REWARDED to INTEGER
-        )
     }
 }

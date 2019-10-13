@@ -63,6 +63,7 @@ class GroupPropertyManager(private var context: Context) {
         this.put("name", data.getString("name"))
         this.put("group", data.getString("group"))
         this.put("points", data.getInt("points").toString())
+        this.put("credits", data.getInt("credits").toString())
 
         // get productStore
         val productStore = ProductStore(this.context)

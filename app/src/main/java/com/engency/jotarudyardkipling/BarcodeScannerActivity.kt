@@ -89,6 +89,14 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         }
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        if (hasFocus) {
+            usedCodes.clear()
+        }
+    }
+
     private fun parseDetections(detections: Detector.Detections<Barcode>?) {
         val barcodes = detections?.detectedItems
 

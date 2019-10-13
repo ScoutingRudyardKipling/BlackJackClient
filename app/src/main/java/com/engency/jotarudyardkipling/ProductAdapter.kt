@@ -51,11 +51,13 @@ class ProductAdapter(private val context: Context, private var dataSource: List<
 
         titleTextView.text = product.name
 
-        if (product.rewarded) {
+        if(!product.bought) {
+            detailTextView.text = "Nog niet gekocht"
+        } else if (product.rewarded) {
             detailTextView.text = "Voltooid"
             rowView.setBackgroundColor(Color.parseColor("#c8f9cb"))
         } else {
-            detailTextView.text = "Unlocked"
+            detailTextView.text = "Gekocht"
             rowView.setBackgroundColor(Color.parseColor("#c8d2f9"))
         }
 
