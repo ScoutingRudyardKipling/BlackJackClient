@@ -62,24 +62,22 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
         val unlockEnabled: Boolean = product.costs <= this.actionPointCounter
 
+        tvCosts.text = Html.fromHtml(product.description)
+
         if (product.rewarded) {
             btnUnlock.isEnabled = false
             tvStatus.text = "Je hebt hier al " + product.reward.toString() + " punten voor gekregen."
-            tvCosts.text = ""
             btnUnlock.visibility = View.INVISIBLE
         } else if(product.bought) {
             btnUnlock.isEnabled = false
             tvStatus.text = "Je hebt dit item gekocht!"
-            tvCosts.text = ""
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
-            tvCosts.text = Html.fromHtml(product.description)
 
             btnUnlock.visibility = View.INVISIBLE
         } else {
             val stringResource: Int = if (unlockEnabled) R.string.costs_unlock_product else R.string.costs_unlock_product_insufficient
-            tvStatus.text = "Heel leuk dat je dit item in je lijstje hebt staan, maar omdat je het nog niet gekocht hebt kan het je nog niet helpen bij je goudmijn! Als je het item koopt zal je op de posten die je nog moet doen een voordeel ontvangen."
-            tvCosts.text = String.format(resources.getString(stringResource), product.costs, this.actionPointCounter)
+            tvStatus.text = String.format(resources.getString(stringResource), product.costs, this.actionPointCounter)
             btnUnlock.isEnabled = unlockEnabled
 
             if (unlockEnabled) {
