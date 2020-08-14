@@ -98,7 +98,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
             val type = barcodes.valueAt(index).valueFormat
             Log.i(LOG_TAG, type.toString())
             when (type) {
-                Barcode.PRODUCT -> verifyCode(code.rawValue)
+                Barcode.TEXT -> verifyCode(code.rawValue)
                 else -> Log.i(LOG_TAG, "type " + type + ", " + code.rawValue)
             }
         }

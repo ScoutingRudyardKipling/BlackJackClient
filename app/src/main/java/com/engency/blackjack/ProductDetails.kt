@@ -32,14 +32,11 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
 
     private lateinit var properties: GroupPropertyManager
 
-    private var actionPointCounter: Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_details)
 
         this.properties = GroupPropertyManager(applicationContext)
-        this.actionPointCounter = this.properties.get("credits")!!.toInt()
 
         productStore = ProductStore(applicationContext)
         product = productStore.getById(intent.extras!!.getInt("product"))!!
@@ -60,37 +57,20 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
                 .into(ivImage)
         tvTitle.text = product.name
 
-        val unlockEnabled: Boolean = product.costs <= this.actionPointCounter
-
         if (product.rewarded) {
             btnUnlock.isEnabled = false
             tvStatus.text = "Je hebt hier al " + product.reward.toString() + " punten voor gekregen."
             tvCosts.text = ""
             btnUnlock.visibility = View.INVISIBLE
-        } else if(product.bought) {
+        } else {
             btnUnlock.isEnabled = false
-            tvStatus.text = "Je hebt het product unlocked en kan met onderstaande beschrijving naar de bijbehorende post rijden:"
-            tvCosts.text = "Hier komt een beschrijving van hoe je op deze post komt"
+            tvStatus.text = "Met onderstaande beschrijving kan je naar de bijbehorende post rijden:"
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
             tvCosts.text = Html.fromHtml(product.description)
 
             btnUnlock.visibility = View.INVISIBLE
-        } else {
-            val stringResource: Int = if (unlockEnabled) R.string.costs_unlock_product else R.string.costs_unlock_product_insufficient
-            tvStatus.text = "Heel leuk dat je dit product hebt gevonden, maar het is nog geen punten waard! Als je het product 'unlockt' krijg je meer details over hoe je je puntjes binnen kan harken."
-            tvCosts.text = String.format(resources.getString(stringResource), product.costs, this.actionPointCounter)
-            btnUnlock.isEnabled = unlockEnabled
-
-            if (unlockEnabled) {
-                btnUnlock.setOnClickListener { performUnlock() }
-            }
         }
-    }
-
-    fun performUnlock() {
-        NetworkHelper.unlock(this.properties.get("token")!!, this.product.id, this)
-
     }
 
     override fun success(data: JSONObject) {

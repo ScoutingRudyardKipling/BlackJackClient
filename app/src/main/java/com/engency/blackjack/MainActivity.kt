@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
     private lateinit var tvPoints: TextView
-    private lateinit var tvActionPoints: TextView
     private lateinit var llMainContainer: LinearLayout
 
     private val fragmentProducts: ProductOverview = ProductOverview()
@@ -80,7 +79,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         tvPoints = findViewById(R.id.tv_points)
-        tvActionPoints = findViewById(R.id.tv_action_points)
         llMainContainer = findViewById(R.id.ll_main_container)
 
         // open correct fragment
@@ -109,7 +107,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updatePoints() {
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
-        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
     }
 
     override fun onBackPressed() {
@@ -156,7 +153,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         properties.reload()
         tvPoints.text = String.format(resources.getString(R.string.points_amount), properties.get("points"))
-        tvActionPoints.text = String.format(resources.getString(R.string.action_points_amount), properties.get("credits"))
 
         if (cascade) {
             fragmentProducts.onUpdateRequested()
