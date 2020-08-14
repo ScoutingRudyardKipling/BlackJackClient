@@ -11,8 +11,12 @@ import com.google.firebase.messaging.RemoteMessage
 
 class FCMService : FirebaseMessagingService() {
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        if (remoteMessage!!.data.isNotEmpty() && remoteMessage.data.containsKey("event")) {
+    override fun onNewToken(p0: String) {
+        super.onNewToken(p0)
+    }
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        if (remoteMessage.data.isNotEmpty() && remoteMessage.data.containsKey("event")) {
             when (remoteMessage.data.getValue("event")) {
                 "new-product" -> newProduct(Product.fromMap(remoteMessage.data.toMap()))
                 "update-product" -> updateProduct(Product.fromMap(remoteMessage.data.toMap()))
