@@ -44,7 +44,7 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-coroutines:1.16.0'
     //for Kotlin Coroutines support
     implementation 'com.github.kittinunf.fuel:fuel-gson:1.16.0' //for Gson support
-    implementation 'com.github.kittinunf.fuel:fuel-jackson:1.15.0' //for Jackson support
+    implementation 'com.github.kittinunf.fuel:fuel-jackson:1.16.0' //for Jackson support
     implementation 'com.github.kittinunf.fuel:fuel-moshi:1.15.0' //for Moshi support
     implementation 'com.github.kittinunf.fuel:fuel-forge:1.16.0' //for Forge support
     implementation "org.jetbrains.anko:anko-sqlite:0.10.5"
