@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.engency.blackjack.Models.Product
-import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
 import org.json.JSONObject
@@ -67,7 +66,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
             tvStatus.text = "Met onderstaande beschrijving kan je naar de bijbehorende post rijden:"
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
-            tvCosts.text = Html.fromHtml(product.description)
+            tvCosts.text = Html.fromHtml(product.description, 0)
 
             btnUnlock.visibility = View.INVISIBLE
         }

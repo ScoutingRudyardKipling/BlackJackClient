@@ -27,7 +27,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/hint_insert_code"
-        android:layout_width="wrap_content" />
+        android:layout_width="wrap_content"
+        android:importantForAutofill="no" />
 
     <Button
         android:id="@+id/btn_submit_code"

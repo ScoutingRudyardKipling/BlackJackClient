@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         openFragment(fragmentActive ?: fragmentProducts)
 
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
             val intent = BarcodeScannerActivity.newIntent(this)
             startActivity(intent)
         }
