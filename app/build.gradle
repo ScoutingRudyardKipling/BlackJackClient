@@ -48,8 +48,8 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-moshi:1.15.0' //for Moshi support
     implementation 'com.github.kittinunf.fuel:fuel-forge:1.15.0' //for Forge support
     implementation "org.jetbrains.anko:anko-sqlite:0.10.5"
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    implementation 'com.github.bumptech.glide:glide:4.2.0'
 //    kapt 'com.github.bumptech.glide:compiler:4.2.0'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
 }
