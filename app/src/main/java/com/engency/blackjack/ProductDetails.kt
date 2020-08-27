@@ -13,11 +13,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.engency.blackjack.Models.Product
+import com.engency.blackjack.network.GroupInfo
 import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
-import org.json.JSONObject
 
-class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
+class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface<GroupInfo> {
 
 
     private lateinit var productStore: ProductStore
@@ -72,7 +72,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface {
         }
     }
 
-    override fun success(data: JSONObject) {
+    override fun success(data: GroupInfo) {
         properties.updateWithGroupInstance(data)
         product = productStore.getById(product.id)!!
 

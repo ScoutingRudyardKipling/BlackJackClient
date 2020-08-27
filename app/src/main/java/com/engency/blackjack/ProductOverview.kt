@@ -8,10 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.engency.blackjack.network.GroupInfo
 import com.engency.blackjack.network.NetworkHelper
-import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
-import org.json.JSONObject
 
 /**
  * A simple [Fragment] subclass.
@@ -22,7 +21,7 @@ import org.json.JSONObject
  * create an instance of this fragment.
  *
  */
-class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetworkResponseInterface {
+class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var productStore: ProductStore
@@ -60,30 +59,20 @@ class ProductOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetw
         this.productStore = ProductStore(activity!!.applicationContext)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onStart() {
         super.onStart()
         reloadListview()
     }
 
     override fun onRefresh() {
-        NetworkHelper.getGroupInfo(properties.get("token")!!, this)
+        NetworkHelper.getGroupInfo(properties.get("token")!!,
+                success = { data: GroupInfo -> properties.updateWithGroupInstance(data); reloadListview() },
+                failure = { _ -> this.srlProducts.isRefreshing = false }
+        )
     }
 
     fun onUpdateRequested() {
         reloadListview()
-    }
-
-    override fun success(data: JSONObject) {
-        properties.updateWithGroupInstance(data)
-        reloadListview()
-    }
-
-    override fun failure(message: String) {
-        this.srlProducts.isRefreshing = false
     }
 
     private fun reloadListview() {

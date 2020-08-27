@@ -1,33 +1,28 @@
 package com.engency.blackjack
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.engency.blackjack.Models.Product
+import com.engency.blackjack.network.BarcodeSuccess
 import com.engency.blackjack.network.NetworkHelper
-import com.engency.blackjack.network.OnNetworkResponseInterface
 import com.engency.blackjack.stores.ProductStore
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
-import org.json.JSONObject
 
-class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
+class BarcodeScannerActivity : AppCompatActivity() {
     private var detectorActive: Boolean = false
     private lateinit var etBarcode: EditText
     private lateinit var detector: BarcodeDetector
@@ -114,23 +109,26 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         if (productStore.hasProductWithCode(barcode)) {
             Snackbar.make(this.etBarcode, "Hee, je hebt dit product al joh!", Snackbar.LENGTH_LONG).show()
         } else {
-            NetworkHelper.submitProduct(barcode, properties.get("token")!!, this)
+            NetworkHelper.submitProduct(barcode, properties.get("token")!!,
+                    success = { data: BarcodeSuccess -> this.success(data) },
+                    failure = { message: String -> this.failure(message) }
+            )
         }
     }
 
-    override fun success(data: JSONObject) {
-        properties.updateWithGroupInstance(data.getJSONObject("groupInfo"))
+    private fun success(data: BarcodeSuccess) {
+        properties.updateWithGroupInstance(data.groupInfo)
 
-        when (data.getString("type")) {
+        when (data.type) {
             "points" -> {
-                val message: String = data.getString("message")
+                val message: String = data.message
                 showTextPopup(message)
             }
             "product" -> {
-                foundProduct(productStore.getById(data.getInt("productId"))!!)
+                foundProduct(productStore.getById(data.productId)!!)
             }
             "product_reward" -> {
-                val message: String = data.getString("message")
+                val message: String = data.message
                 showTextPopup(message)
             }
         }
@@ -138,7 +136,7 @@ class BarcodeScannerActivity : AppCompatActivity(), OnNetworkResponseInterface {
         Snackbar.make(this.etBarcode, "yesss, code is goedgekeurd!", Snackbar.LENGTH_LONG).show()
     }
 
-    override fun failure(message: String) {
+    private fun failure(message: String) {
         Snackbar.make(this.etBarcode, message, Snackbar.LENGTH_LONG).show()
     }
 

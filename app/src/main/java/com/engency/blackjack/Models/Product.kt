@@ -1,6 +1,6 @@
 package com.engency.blackjack.Models
 
-import org.json.JSONObject
+import com.engency.blackjack.network.ServerProduct
 
 data class Product(var id: Int, val name: String, val description: String, val image: String, val costs: Int, val reward: Int, val code: String, val rewarded: Boolean) {
     companion object {
@@ -14,17 +14,8 @@ data class Product(var id: Int, val name: String, val description: String, val i
         val COLUMN_CODE = "code"
         val COLUMN_REWARDED = "rewarded"
 
-        fun fromJsonObject(item: JSONObject): Product {
-            return Product(
-                    item.getInt("_id"),
-                    item.getString("name"),
-                    item.getString("description"),
-                    item.getString("image"),
-                    item.getInt("costs"),
-                    item.getInt("reward"),
-                    item.getString("code"),
-                    item.getBoolean("rewarded")
-            )
+        fun fromServerProduct(item: ServerProduct): Product {
+            return Product(item._id, item.name, item.description, item.image, item.costs, item.reward, item.code, item.rewarded)
         }
 
         fun fromMap(item: Map<String, String>): Product {

@@ -4,14 +4,13 @@ import android.util.Log
 import com.engency.blackjack.GroupPropertyManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
-import org.json.JSONObject
 
-class FCMRegistrationManager : OnNetworkResponseInterface {
+class FCMRegistrationManager {
 
     private var _token: String = ""
     private lateinit var properties: GroupPropertyManager
 
-    fun register(token: String, gp : GroupPropertyManager) {
+    fun register(token: String, gp: GroupPropertyManager) {
         this._token = token
         this.properties = gp
         this.getFirebaseId()
@@ -27,16 +26,14 @@ class FCMRegistrationManager : OnNetworkResponseInterface {
 
                     // Get new Instance ID token
                     val token = task.result!!.token
-                    NetworkHelper.submitFCMToken(this._token, token, this)
+                    NetworkHelper.submitFCMToken(this._token, token,
+                            success = { properties.put("registered", "1"); properties.commit() },
+                            failure = { message: String -> this.failure(message) }
+                    )
                 })
     }
 
-    override fun success(data: JSONObject) {
-        properties.put("registered", "1")
-        properties.commit()
-    }
-
-    override fun failure(message: String) {
+    fun failure(message: String) {
         if (message == "Token wordt al gebruikt") {
             properties.put("registered", "1")
             properties.commit()

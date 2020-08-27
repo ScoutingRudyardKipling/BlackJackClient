@@ -3,9 +3,9 @@ package com.engency.blackjack
 import android.content.Context
 import android.util.Log
 import com.engency.blackjack.Models.GroupProperty
+import com.engency.blackjack.network.GroupInfo
 import com.engency.blackjack.stores.ProductStore
 import org.jetbrains.anko.db.*
-import org.json.JSONObject
 
 class GroupPropertyManager(private var context: Context) {
 
@@ -58,16 +58,16 @@ class GroupPropertyManager(private var context: Context) {
         this.commit()
     }
 
-    fun updateWithGroupInstance(data: JSONObject) {
+    fun updateWithGroupInstance(data: GroupInfo) {
         Log.i("GROUPINFO", data.toString())
-        this.put("name", data.getString("name"))
-        this.put("group", data.getString("group"))
-        this.put("points", data.getInt("points").toString())
+        this.put("name", data.name)
+        this.put("group", data.group)
+        this.put("points", data.points.toString())
 
         // get productStore
         val productStore = ProductStore(this.context)
         productStore.clear()
-        productStore.addAll(data.getJSONArray("products"))
+        productStore.addAll(data.products)
 
 
         this.commit()

@@ -1,10 +1,10 @@
 package com.engency.blackjack.Models
 
-import org.json.JSONObject
+import com.engency.blackjack.network.ServerTeamScore
 
 data class TeamScore(var id: Int, val name: String, val group: String, val score: Int) {
 
-    var index : Int = 0
+    var index: Int = 0
 
     companion object {
         val TABLE_NAME = "TeamScore"
@@ -13,13 +13,8 @@ data class TeamScore(var id: Int, val name: String, val group: String, val score
         val COLUMN_GROUP = "groupName"
         val COLUMN_SCORE = "score"
 
-        fun fromJsonObject(item: JSONObject): TeamScore {
-            return TeamScore(
-                    item.getInt("_id"),
-                    item.getString("name"),
-                    item.getString("group"),
-                    item.getInt("points")
-            )
+        fun fromServerTeamScore(item: ServerTeamScore): TeamScore {
+            return TeamScore(item._id, item.name, item.group, item.points);
         }
     }
 }

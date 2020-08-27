@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.engency.blackjack.network.GroupsResponse
 import com.engency.blackjack.network.NetworkHelper
-import com.engency.blackjack.network.OnNetworkResponseInterface
+import com.engency.blackjack.network.ServerTeamScore
 import com.engency.blackjack.stores.ScoreStore
-import org.json.JSONObject
 
 /**
  * A simple [Fragment] subclass.
@@ -22,7 +22,7 @@ import org.json.JSONObject
  * create an instance of this fragment.
  *
  */
-class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetworkResponseInterface {
+class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var properties: GroupPropertyManager
     private lateinit var scoreStore: ScoreStore
@@ -52,10 +52,6 @@ class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetwor
         this.scoreStore = ScoreStore(context)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onStart() {
         super.onStart()
         reloadListview()
@@ -63,17 +59,11 @@ class ScoreOverview : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnNetwor
     }
 
     override fun onRefresh() {
-        NetworkHelper.listScores(properties.get("token")!!, this)
-    }
-
-    override fun success(data: JSONObject) {
-        this.scoreStore.clear()
-        this.scoreStore.addAll(data.getJSONArray("scores"))
-        reloadListview()
-    }
-
-    override fun failure(message: String) {
-        this.srlScores.isRefreshing = false
+        NetworkHelper.listScores(
+                properties.get("token")!!,
+                success = { response: GroupsResponse -> this.scoreStore.clear(); this.scoreStore.addAllFromServer(response.scores); reloadListview() },
+                failure = { this.srlScores.isRefreshing = false }
+        )
     }
 
     private fun reloadListview() {

@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import com.engency.blackjack.network.GroupInfo
+import com.engency.blackjack.network.LoginResponse
 import com.engency.blackjack.network.NetworkHelper
 import com.engency.blackjack.network.OnNetworkResponseInterface
-import org.json.JSONObject
 
-class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface {
+class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface<LoginResponse> {
 
     private lateinit var etGroup: EditText
     private lateinit var etPassword: EditText
@@ -43,18 +44,17 @@ class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface {
         }
     }
 
-    override fun success(data: JSONObject) {
-        if (data.has("token")) {
-            val token: String = data.getString("token")
-            properties.put("token", token)
-            properties.commit()
-            NetworkHelper.getGroupInfo(token, this)
-        } else {
-            properties.updateWithGroupInstance(data)
-            startActivity(MainActivity.newIntent(this).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-        }
-
-
+    override fun success(data: LoginResponse) {
+        properties.put("token", data.token)
+        properties.commit()
+        NetworkHelper.getGroupInfo(
+                token = data.token,
+                success = { groupData: GroupInfo ->
+                    properties.updateWithGroupInstance(groupData)
+                    startActivity(MainActivity.newIntent(this).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                },
+                failure = { }
+        )
     }
 
     override fun failure(message: String) {

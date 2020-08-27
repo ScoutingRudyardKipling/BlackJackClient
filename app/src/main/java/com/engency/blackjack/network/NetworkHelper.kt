@@ -3,98 +3,94 @@ package com.engency.blackjack.network
 import android.util.Log
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
-import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Response
-import com.github.kittinunf.result.Result
-import org.json.JSONObject
+import com.github.kittinunf.fuel.gson.responseObject
 
+data class LoginResponse(var groupInfo: GroupInfo, var token: String = "")
+data class GroupInfo(var name: String, var group: String, var points: Number, var products: List<ServerProduct>)
+data class ServerTeamScore(var _id: Int, val name: String, val group: String, val points: Int)
+data class ServerProduct(var _id: Int, val name: String, val description: String, val image: String, val costs: Int, val reward: Int, val code: String, val rewarded: Boolean)
+data class GroupsResponse(var scores: List<ServerTeamScore>);
+data class BarcodeSuccess(var groupInfo: GroupInfo, var type: String, var message: String, var productId: Int)
 
 class NetworkHelper {
     companion object {
 
         private var baseUrl = "https://blackjackeindhoven.herokuapp.com"
 
-        fun login(groupName: String, password: String, handler: OnNetworkResponseInterface) {
-            post(
-                    "auth/login",
-                    "",
-                    listOf("name" to groupName, "password" to password),
-                    handler
-            )
+        fun login(groupName: String, password: String, handler: OnNetworkResponseInterface<LoginResponse>) {
+            Fuel.post("$baseUrl/auth/login", listOf("name" to groupName, "password" to password))
+                    .responseObject<LoginResponse> { _, _, result ->
+                        result.fold(
+                                success = { data: LoginResponse -> handler.success(data) },
+                                failure = { error: FuelError -> this.handleFuelError(error, handler) }
+                        )
+                    }
         }
 
-        fun submitLocation(lat: Double, lon: Double, token: String, handler: OnNetworkResponseInterface) {
-            post("locations", token, listOf("lat" to lat, "lon" to lon), handler)
-        }
-
-        fun submitProduct(code: String, token: String, handler: OnNetworkResponseInterface) {
-            post("products", token, listOf("code" to code), handler)
-        }
-
-        fun submitFCMToken(token: String, fcmToken: String, handler: OnNetworkResponseInterface) {
-            post("groups/current/fcm", token, listOf("token" to fcmToken), handler)
-        }
-
-        fun getGroupInfo(token: String, handler: OnNetworkResponseInterface) {
-            get("groups/current", token, handler)
-        }
-
-        fun listScores(token: String, handler: OnNetworkResponseInterface) {
-            get("groups", token, handler)
-        }
-
-        fun unlock(token: String, productId: Int, handler: OnNetworkResponseInterface) {
-            put(
-                    "products/$productId",
-                    token,
-                    listOf("action" to "unlock"),
-                    handler
-            )
-        }
-
-        private fun get(path: String, token: String, handler: OnNetworkResponseInterface) {
-            Fuel.get("$baseUrl/$path")
+        fun submitProduct(code: String, token: String, success: (BarcodeSuccess) -> Unit, failure: (String) -> Unit) {
+            Fuel.post("$baseUrl/products", listOf("code" to code))
                     .header("x-token" to token)
-                    .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
+                    .responseObject<BarcodeSuccess> { _, _, result ->
+                        result.fold(
+                                success = success,
+                                failure = { error: FuelError -> this.handleFuelError(error, failure) }
+                        )
+                    }
         }
 
-        private fun put(path: String, token: String, parameters: List<Pair<String, Any?>>? = null, handler: OnNetworkResponseInterface) {
-            Fuel.put("$baseUrl/$path", parameters)
+        fun submitFCMToken(token: String, fcmToken: String, success: (Any) -> Unit, failure: (String) -> Unit) {
+            Fuel.post("$baseUrl/groups/current/fcm", listOf("token" to fcmToken))
                     .header("x-token" to token)
-                    .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
+                    .responseObject<Any> { _, _, result ->
+                        result.fold(
+                                success = success,
+                                failure = { error: FuelError -> this.handleFuelError(error, failure) }
+                        )
+                    }
         }
 
-        private fun patch(path: String, token: String, parameters: List<Pair<String, Any?>>? = null, handler: OnNetworkResponseInterface) {
-            Fuel.patch("$baseUrl/$path", parameters)
+        fun getGroupInfo(token: String, success: (GroupInfo) -> Any, failure: (String) -> Unit) {
+            Fuel.get("$baseUrl/groups/current")
                     .header("x-token" to token)
-                    .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
+                    .responseObject<GroupInfo> { _, _, result ->
+                        result.fold(
+                                success = success,
+                                failure = { error: FuelError -> this.handleFuelError(error, failure) }
+                        )
+                    }
         }
 
-        private fun post(path: String, token: String, parameters: List<Pair<String, Any?>>? = null, handler: OnNetworkResponseInterface) {
-            Fuel.post("$baseUrl/$path", parameters)
+        fun listScores(token: String, success: (GroupsResponse) -> Any, failure: (String) -> Unit) {
+            Fuel.get("$baseUrl/groups")
                     .header("x-token" to token)
-                    .responseJson { _, resp, result -> handleResponse(resp, result, handler) }
+                    .responseObject<GroupsResponse> { _, _, result ->
+                        result.fold(
+                                success = success,
+                                failure = { error: FuelError -> this.handleFuelError(error, failure) }
+                        )
+                    }
         }
 
-        private fun handleResponse(resp: Response, result: Result<Json, FuelError>, handler: OnNetworkResponseInterface) {
-            result.fold(success = { json ->
-                val data: JSONObject = json.obj()
-                var innerData = JSONObject()
-                if (data.has("data")) {
-                    innerData = data.getJSONObject("data")
-                }
-                val success: Boolean = data.getBoolean("success")
+        private fun handleFuelError(error: FuelError, callback: (String) -> Unit) {
+            callback(extractMessage(error))
+        }
 
-                if (success) {
-                    handler.success(innerData)
-                } else {
-                    handler.failure(data.getString("message"))
-                }
-            }, failure = { error ->
-                Log.e("qdp error", error.toString())
-                handler.failure("Er trad een onbekende fout op")
-            })
+        private fun handleFuelError(error: FuelError, callback: OnNetworkResponseInterface<*>) {
+            callback.failure(extractMessage(error))
+        }
+
+        private fun extractMessage(error: FuelError): String {
+            val jsonData = Json(String(error.response.data)).obj()
+
+            var message = "Unknown error"
+            if (jsonData.has("message")) {
+                message = jsonData.getString("message")
+            }
+
+            Log.e("Fuel error", "$message - $error")
+
+            return message;
         }
     }
 }

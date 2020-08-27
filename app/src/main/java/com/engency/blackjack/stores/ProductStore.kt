@@ -2,12 +2,10 @@ package com.engency.blackjack.stores
 
 import android.content.ContentValues
 import android.content.Context
-import android.util.Log
 import com.engency.blackjack.Models.Product
 import com.engency.blackjack.MyDatabaseOpenHelper
+import com.engency.blackjack.network.ServerProduct
 import org.jetbrains.anko.db.*
-import org.json.JSONArray
-import org.json.JSONObject
 
 class ProductStore(private var ctx: Context) {
 
@@ -73,19 +71,13 @@ class ProductStore(private var ctx: Context) {
         }
     }
 
-    fun add(product: JSONObject) {
-        add(Product.fromJsonObject(product))
+    fun add(product: ServerProduct) {
+        add(Product.fromServerProduct(product))
     }
 
-    fun addAll(products: List<Product>) {
+    fun addAll(products: List<ServerProduct>) {
         for (product in products) {
             add(product)
-        }
-    }
-
-    fun addAll(products: JSONArray) {
-        for (i in 0 until products.length()) {
-            add(products.getJSONObject(i))
         }
     }
 

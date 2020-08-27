@@ -4,11 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import com.engency.blackjack.Models.TeamScore
 import com.engency.blackjack.MyDatabaseOpenHelper
+import com.engency.blackjack.network.ServerTeamScore
 import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.parseList
 import org.jetbrains.anko.db.select
-import org.json.JSONArray
-import org.json.JSONObject
 
 class ScoreStore(private var ctx: Context) {
 
@@ -55,20 +54,8 @@ class ScoreStore(private var ctx: Context) {
         }
     }
 
-    fun add(score: JSONObject) {
-        add(TeamScore.fromJsonObject(score))
-    }
-
-    fun addAll(scores: List<TeamScore>) {
-        for (score in scores) {
-            add(score)
-        }
-    }
-
-    fun addAll(scores: JSONArray) {
-        for (i in 0 until scores.length()) {
-            add(scores.getJSONObject(i))
-        }
+    fun addAllFromServer(scores: List<ServerTeamScore>) {
+        scores.forEach { score -> add(TeamScore.fromServerTeamScore(score)) }
     }
 
 }
