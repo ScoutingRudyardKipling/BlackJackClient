@@ -1,2 +1,4 @@
 /build
 /release
+releasemanager_service.json*
+release-key.keystore*

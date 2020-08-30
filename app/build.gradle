@@ -1,11 +1,9 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.github.triplet.play"
 
 android {
     compileSdkVersion 30
@@ -17,14 +15,37 @@ android {
         versionName "2.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
+    signingConfigs{
+        release{
+            keyAlias System.getenv('BUNDLE_NAME')
+            keyPassword System.getenv('KEYSTORE_PASSWORD')
+            storePassword System.getenv('KEY_PASSWORD')
+            storeFile file('release-key.keystore')
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
         }
     }
     lintOptions {
         checkReleaseBuilds false
+    }
+}
+
+play {
+    serviceAccountCredentials = file("releasemanager_service.json")
+    track = "beta"
+    releaseStatus = "completed"
+    defaultToAppBundles = true
+    resolutionStrategy = "auto"
+    outputProcessor {
+        versionNameOverride = "$versionNameOverride.$versionCode"
     }
 }
 
