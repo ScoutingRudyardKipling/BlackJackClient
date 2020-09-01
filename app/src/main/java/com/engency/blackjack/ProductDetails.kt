@@ -52,18 +52,18 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface<GroupInfo
     private fun loadData() {
         Glide.with(applicationContext)
                 .asBitmap()
-                .load("https://blackjack.engency.com:3000/images/" + product.image)
+                .load("${BuildConfig.SERVER_URL}/images/" + product.image)
                 .into(ivImage)
         tvTitle.text = product.name
 
         if (product.rewarded) {
             btnUnlock.isEnabled = false
-            tvStatus.text = "Je hebt hier al " + product.reward.toString() + " punten voor gekregen."
+            tvStatus.text = String.format(resources.getString(R.string.product_details_status_completed), product.reward.toString())
             tvCosts.text = ""
             btnUnlock.visibility = View.INVISIBLE
         } else {
             btnUnlock.isEnabled = false
-            tvStatus.text = "Met onderstaande beschrijving kan je naar de bijbehorende post rijden:"
+            tvStatus.text = resources.getString(R.string.product_details_nav_description)
 
             tvCosts.movementMethod = LinkMovementMethod.getInstance()
             tvCosts.text = Html.fromHtml(product.description, 0)
@@ -78,8 +78,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface<GroupInfo
 
         loadData()
 
-        Snackbar.make(this.btnUnlock, "Yes! Je kan nu naar dit product rijden!", Snackbar.LENGTH_LONG).show()
-
+        Snackbar.make(this.btnUnlock, resources.getString(R.string.product_details_notice_start_navigation), Snackbar.LENGTH_LONG).show()
     }
 
     override fun failure(message: String) {

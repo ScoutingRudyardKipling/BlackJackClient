@@ -1,6 +1,7 @@
 package com.engency.blackjack.network
 
 import android.util.Log
+import com.engency.blackjack.BuildConfig
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelError
@@ -16,10 +17,8 @@ data class BarcodeSuccess(var groupInfo: GroupInfo, var type: String, var messag
 class NetworkHelper {
     companion object {
 
-        private var baseUrl = "https://blackjackeindhoven.herokuapp.com"
-
         fun login(groupName: String, password: String, handler: OnNetworkResponseInterface<LoginResponse>) {
-            Fuel.post("$baseUrl/auth/login", listOf("name" to groupName, "password" to password))
+            Fuel.post("${BuildConfig.SERVER_URL}/auth/login", listOf("name" to groupName, "password" to password))
                     .responseObject<LoginResponse> { _, _, result ->
                         result.fold(
                                 success = { data: LoginResponse -> handler.success(data) },
@@ -29,7 +28,7 @@ class NetworkHelper {
         }
 
         fun submitProduct(code: String, token: String, success: (BarcodeSuccess) -> Unit, failure: (String) -> Unit) {
-            Fuel.post("$baseUrl/products", listOf("code" to code))
+            Fuel.post("${BuildConfig.SERVER_URL}/products", listOf("code" to code))
                     .header("x-token" to token)
                     .responseObject<BarcodeSuccess> { _, _, result ->
                         result.fold(
@@ -40,7 +39,7 @@ class NetworkHelper {
         }
 
         fun submitFCMToken(token: String, fcmToken: String, success: (Any) -> Unit, failure: (String) -> Unit) {
-            Fuel.post("$baseUrl/groups/current/fcm", listOf("token" to fcmToken))
+            Fuel.post("${BuildConfig.SERVER_URL}/groups/current/fcm", listOf("token" to fcmToken))
                     .header("x-token" to token)
                     .responseObject<Any> { _, _, result ->
                         result.fold(
@@ -51,7 +50,7 @@ class NetworkHelper {
         }
 
         fun getGroupInfo(token: String, success: (GroupInfo) -> Any, failure: (String) -> Unit) {
-            Fuel.get("$baseUrl/groups/current")
+            Fuel.get("${BuildConfig.SERVER_URL}/groups/current")
                     .header("x-token" to token)
                     .responseObject<GroupInfo> { _, _, result ->
                         result.fold(
@@ -62,7 +61,7 @@ class NetworkHelper {
         }
 
         fun listScores(token: String, success: (GroupsResponse) -> Any, failure: (String) -> Unit) {
-            Fuel.get("$baseUrl/groups")
+            Fuel.get("${BuildConfig.SERVER_URL}/groups")
                     .header("x-token" to token)
                     .responseObject<GroupsResponse> { _, _, result ->
                         result.fold(

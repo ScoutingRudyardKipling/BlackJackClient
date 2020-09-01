@@ -1,5 +1,6 @@
 package com.engency.blackjack
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -8,11 +9,14 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.engency.blackjack.Models.Product
 import com.engency.blackjack.network.BarcodeSuccess
 import com.engency.blackjack.network.NetworkHelper
@@ -59,20 +63,20 @@ class BarcodeScannerActivity : AppCompatActivity() {
                 .setAutoFocusEnabled(true)
                 .build()
 
-//        svBarcode.holder.addCallback(object : SurfaceHolder.Callback2 {
-//            override fun surfaceRedrawNeeded(holder: SurfaceHolder?) {}
-//            override fun surfaceChanged(holder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {}
-//            override fun surfaceDestroyed(holder: SurfaceHolder?) {
-//                cameraSource.stop()
-//            }
-//
-//            override fun surfaceCreated(holder: SurfaceHolder?) {
-//                if (ContextCompat.checkSelfPermission(this@BarcodeScannerActivity, Manifest.permission.CAMERA)
-//                        == PackageManager.PERMISSION_GRANTED) {
-//                    cameraSource.start(holder)
-//                } else ActivityCompat.requestPermissions(this@BarcodeScannerActivity, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA)
-//            }
-//        })
+
+        svBarcode.holder!!.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+                cameraSource.stop()
+            }
+
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                if (ContextCompat.checkSelfPermission(this@BarcodeScannerActivity, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    cameraSource.start(holder)
+                } else ActivityCompat.requestPermissions(this@BarcodeScannerActivity, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA)
+            }
+        })
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)

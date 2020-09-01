@@ -2,22 +2,22 @@ package com.engency.blackjack
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.fragment.app.Fragment
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import com.engency.blackjack.network.FCMRegistrationManager
 import com.engency.blackjack.stores.ProductStore
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import com.engency.blackjack.network.FCMRegistrationManager
-import android.content.IntentFilter
-import android.util.Log
-import android.view.View
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
@@ -138,9 +138,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun openFragment(fragment: Fragment) {
         if (fragment !== this.fragmentActive) {
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            this.fragmentActive?.let { fragmentTransaction.remove(this.fragmentActive!!) }
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            supportFragmentManager.fragments.forEach { cFragment -> fragmentTransaction.remove(cFragment) }
             fragmentTransaction.add(R.id.ll_main_container, fragment)
             fragmentTransaction.commit()
 

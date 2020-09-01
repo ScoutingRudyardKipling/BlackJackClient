@@ -4,16 +4,16 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/colorPrimaryLight"
+    android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
+        android:paddingTop="56dp"
         android:paddingRight="24dp">
 
         <ImageView
@@ -22,7 +22,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/logo_description" />
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
@@ -30,13 +31,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
+
+            <EditText
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="@color/colorTextWhite"
                 android:backgroundTint="@color/colorTextWhite"
-                android:hint="Groepsnaam" />
+                android:hint="@string/group_field_text"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="@color/colorTextWhite" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
@@ -45,13 +49,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColor="@color/colorTextWhite"
                 android:backgroundTint="@color/colorTextWhite"
-                android:hint="Wachtwoord"/>
+                android:hint="@string/password_field_text"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:textColor="@color/colorTextWhite" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -60,10 +67,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
-            android:padding="12dp"
             android:background="@color/colorPrimary"
-            android:textColor="@color/colorTextWhite"
-            android:text="Login"/>
+            android:padding="12dp"
+            android:text="@string/login_button_text"
+            android:textColor="@color/colorTextWhite" />
+
+        <TextView
+            android:id="@+id/txt_open_source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_opensource"
+            android:autoLink="web"
+            android:linksClickable="true"
+            />
 
     </LinearLayout>
 </ScrollView>

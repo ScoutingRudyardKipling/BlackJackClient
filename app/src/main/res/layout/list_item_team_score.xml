@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:orientation="horizontal"
-    android:padding="7dp">
+    android:padding="7dp"
+    android:weightSum="6">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,8 +17,8 @@
             android:id="@+id/lv_team_score_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
             android:textColor="@color/colorTextGray"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -33,8 +34,10 @@
         android:id="@+id/lv_team_score_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorTextGray"
         android:layout_weight="1"
+        android:width="50dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/colorTextGray"
         android:textSize="35sp"
         android:textStyle="bold" />
 
