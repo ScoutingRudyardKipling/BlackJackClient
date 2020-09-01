@@ -58,7 +58,7 @@ class ProductDetails : AppCompatActivity(), OnNetworkResponseInterface<GroupInfo
 
         if (product.rewarded) {
             btnUnlock.isEnabled = false
-            tvStatus.text = String.format(resources.getString(R.string.product_details_status_completed), product.reward)
+            tvStatus.text = String.format(resources.getString(R.string.product_details_status_completed), product.reward.toString())
             tvCosts.text = ""
             btnUnlock.visibility = View.INVISIBLE
         } else {

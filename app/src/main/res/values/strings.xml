@@ -29,7 +29,7 @@
     <string name="menu_group_account_title">Account</string>
     <string name="completed">Voltooid</string>
     <string name="unlocked">Unlocked</string>
-    <string name="product_details_status_completed">Je hebt hier al %1$d punten voor gekregen.</string>
+    <string name="product_details_status_completed">Je hebt hier al %1$s punten voor gekregen.</string>
     <string name="product_details_nav_description">Met onderstaande beschrijving kan je naar de bijbehorende post rijden:</string>
     <string name="product_details_notice_start_navigation">Yes! Je kan nu naar dit product rijden!</string>
 </resources>
