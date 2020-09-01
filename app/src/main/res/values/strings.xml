@@ -14,4 +14,9 @@
     <string name="hint_insert_code">Typel hier je code</string>
     <string name="title_submit_code">Invoeren</string>
     <string name="points_amount">%1$s punten</string>
+    <string name="password_field_text">Wachtwoord</string>
+    <string name="login_button_text">Login</string>
+    <string name="group_field_text">Groepsnaam</string>
+    <string name="logo_description">App Logo</string>
+    <string name="text_opensource">Benieuwd naar hoe deze app werkt? De broncode is open-source en terug te vinden op github: https://www.github.com/ScoutingRudyardKipling .</string>
 </resources>
