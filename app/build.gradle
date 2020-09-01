@@ -28,9 +28,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField("String", "SERVER_URL", "\"https://blackjackeindhoven.herokuapp.com\"")
         }
         debug {
             debuggable true
+            buildConfigField("String", "SERVER_URL", "\"https://blackjackeindhoven.herokuapp.com\"")
         }
     }
     lintOptions {

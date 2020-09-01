@@ -46,16 +46,16 @@ class ProductAdapter(private val context: Context, private var dataSource: List<
 
         Glide.with(this.context)
                 .asBitmap()
-                .load("https://blackjack.engency.com:3000/images/" + product.image)
+                .load("${BuildConfig.SERVER_URL}/images/" + product.image)
                 .into(imageView)
 
         titleTextView.text = product.name
 
         if (product.rewarded) {
-            detailTextView.text = "Voltooid"
+            detailTextView.text = context.getString(R.string.completed)
             rowView.setBackgroundColor(Color.parseColor("#c8f9cb"))
         } else {
-            detailTextView.text = "Unlocked"
+            detailTextView.text = context.getString(R.string.unlocked)
             rowView.setBackgroundColor(Color.parseColor("#c8d2f9"))
         }
 
