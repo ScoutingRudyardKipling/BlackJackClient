@@ -25,7 +25,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             buildConfigField("String", "SERVER_URL", "\"https://blackjackeindhoven.herokuapp.com\"")
@@ -63,17 +63,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.16.0' //for Android
     implementation "com.github.kittinunf.fuel:fuel:$fuel_version" //for JVM
-    implementation "com.github.kittinunf.fuel:fuel-livedata:$fuel_version" //for LiveData support
-    implementation "com.github.kittinunf.fuel:fuel-rxjava:$fuel_version" //for RxJava support
     implementation "com.github.kittinunf.fuel:fuel-coroutines:$fuel_version"
     //for Kotlin Coroutines support
     implementation "com.github.kittinunf.fuel:fuel-gson:$fuel_version" //for Gson support
-    implementation "com.github.kittinunf.fuel:fuel-jackson:$fuel_version" //for Jackson support
-    implementation "com.github.kittinunf.fuel:fuel-moshi:$fuel_version" //for Moshi support
-    implementation "com.github.kittinunf.fuel:fuel-forge:$fuel_version" //for Forge support
     implementation "org.jetbrains.anko:anko-sqlite:0.10.8"
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-//    kapt 'com.github.bumptech.glide:compiler:4.2.0'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
 
     testImplementation 'junit:junit:4.13'
