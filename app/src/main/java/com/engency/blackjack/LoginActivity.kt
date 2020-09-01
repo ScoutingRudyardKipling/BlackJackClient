@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity(), OnNetworkResponseInterface<LoginRespo
     }
 
     override fun failure(message: String) {
-        Snackbar.make(this.btnLogin, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(btnLogin, message, Snackbar.LENGTH_LONG).show()
         Log.e("FAILURE", message)
     }
 
