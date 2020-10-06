@@ -58,7 +58,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'com.google.android.gms:play-services-vision:20.1.2'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.16.0' //for Android
