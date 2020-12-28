@@ -11,13 +11,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.engency.blackjack.network.FCMRegistrationManager
 import com.engency.blackjack.stores.ProductStore
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRequestDataUpdate {
@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val fragmentScores: ScoreOverview = ScoreOverview()
 
     private var fragmentActive: Fragment? = null
+    private var drawerLayout: DrawerLayout? = null
 
     private val dataUpdateReceiver: DataUpdateReceiver = DataUpdateReceiver()
 
@@ -72,6 +73,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun openView() {
         setContentView(R.layout.activity_main)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+
         setSupportActionBar(toolbar)
 
         tvPoints = findViewById(R.id.tv_points)
@@ -81,18 +86,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         openFragment(fragmentActive ?: fragmentProducts)
 
-
+        val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { _ ->
             val intent = BarcodeScannerActivity.newIntent(this)
             startActivity(intent)
         }
 
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout!!.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+        navView.setNavigationItemSelectedListener(this)
 
         // set navigation header props
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
@@ -106,8 +112,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout!!.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -128,7 +134,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        drawer_layout.closeDrawer(GravityCompat.START)
+        drawerLayout!!.closeDrawer(GravityCompat.START)
         return true
     }
 

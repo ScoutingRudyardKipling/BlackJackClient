@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: "com.github.triplet.play"
@@ -11,8 +10,8 @@ android {
         applicationId "com.engency.blackjack"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 11
-        versionName "2.0.4"
+        versionCode 13
+        versionName "2.0.6"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs{
@@ -22,6 +21,9 @@ android {
             storePassword System.getenv('KEY_PASSWORD')
             storeFile file('release-key.keystore')
         }
+    }
+    buildFeatures {
+        viewBinding true
     }
     buildTypes {
         release {
@@ -40,15 +42,15 @@ android {
     }
 }
 
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+import com.github.triplet.gradle.androidpublisher.ResolutionStrategy
+
 play {
-    serviceAccountCredentials = file("releasemanager_service.json")
-    track = "beta"
-    releaseStatus = "completed"
+    serviceAccountCredentials.set(file("releasemanager_service.json"))
+    track.set("beta")
+    releaseStatus.set(ReleaseStatus.COMPLETED)
     defaultToAppBundles = true
-    resolutionStrategy = "auto"
-    outputProcessor {
-        versionNameOverride = "$versionNameOverride.$versionCode"
-    }
+    resolutionStrategy.set(ResolutionStrategy.AUTO)
 }
 
 dependencies {
