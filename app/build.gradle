@@ -10,7 +10,7 @@ android {
         applicationId "com.engency.blackjack"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 13
+        versionCode 12
         versionName "2.0.6"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
