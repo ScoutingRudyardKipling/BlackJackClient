@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var fragmentActive: Fragment? = null
 
-    private var fcmRegistrationManager: FCMRegistrationManager = FCMRegistrationManager()
     private val dataUpdateReceiver: DataUpdateReceiver = DataUpdateReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (this.properties.has("token")) {
             loggedIn = true
             openView()
-            if (this.properties.get("registered") != "1") {
-                fcmRegistrationManager.register(this.properties.get("token")!!, this.properties)
-            }
 
             fragmentProducts.setOnRefreshData(this)
         } else {
