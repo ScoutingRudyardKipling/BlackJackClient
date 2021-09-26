@@ -2,35 +2,22 @@ package com.engency.blackjack.network
 
 import android.util.Log
 import com.engency.blackjack.GroupPropertyManager
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
 
 class FCMRegistrationManager {
 
-    private var _token: String = ""
     private lateinit var properties: GroupPropertyManager
 
-    fun register(token: String, gp: GroupPropertyManager) {
-        this._token = token
+    fun storeFirebaseId(gp: GroupPropertyManager) {
         this.properties = gp
-        this.getFirebaseId()
-    }
+        if (!properties.has("token") || !properties.has("fcmtoken")) {
+            Log.e("FCM", "Either api- or fcmtoken missing.")
+            return
+        }
 
-    private fun getFirebaseId() {
-        FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Log.w("FCM", "getInstanceId failed", task.exception)
-                        return@OnCompleteListener
-                    }
-
-                    // Get new Instance ID token
-                    val token = task.result!!.token
-                    NetworkHelper.submitFCMToken(this._token, token,
-                            success = { properties.put("registered", "1"); properties.commit() },
-                            failure = { message: String -> this.failure(message) }
-                    )
-                })
+        NetworkHelper.submitFCMToken(properties.get("token")!!, properties.get("fcmtoken")!!,
+                success = { properties.put("registered", "1"); properties.commit() },
+                failure = { message: String -> this.failure(message) }
+        )
     }
 
     fun failure(message: String) {

@@ -11,8 +11,15 @@ import com.google.firebase.messaging.RemoteMessage
 
 class FCMService : FirebaseMessagingService() {
 
-    override fun onNewToken(p0: String) {
-        super.onNewToken(p0)
+    override fun onNewToken(mToken: String) {
+        super.onNewToken(mToken)
+
+        val groupProperties = GroupPropertyManager(this)
+        groupProperties.put("fcmtoken", mToken)
+        groupProperties.commit()
+
+        // Submit new Instance ID token
+        FCMRegistrationManager().storeFirebaseId(groupProperties)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -56,5 +63,4 @@ class FCMService : FirebaseMessagingService() {
 
         sendBroadcast(Intent ("refresh"))
     }
-
 }
