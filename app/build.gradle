@@ -70,7 +70,7 @@ dependencies {
     implementation "com.github.kittinunf.fuel:fuel-gson:$fuel_version" //for Gson support
     implementation "org.jetbrains.anko:anko-sqlite:0.10.8"
     implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'com.google.firebase:firebase-messaging:21.1.0'
+    implementation 'com.google.firebase:firebase-messaging:24.0.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
